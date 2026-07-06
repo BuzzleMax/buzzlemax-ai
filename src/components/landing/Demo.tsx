@@ -1,31 +1,7 @@
 import * as React from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Play, Maximize2, MessageSquare, BarChart3, Sparkles, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-
-const demoFeatures = [
-  {
-    icon: MessageSquare,
-    title: 'AI Chatbot for Support & Leads',
-    description: 'Qualify prospects, resolve questions, and escalate with context.',
-  },
-  {
-    icon: BarChart3,
-    title: 'Voice Agent Call Qualification',
-    description: 'Capture intent on calls and progress prospects to booking.',
-  },
-  {
-    icon: Sparkles,
-    title: 'Omnichannel Lead Routing',
-    description: 'WhatsApp, Instagram, Messenger—handled by AI workflows.',
-  },
-  {
-    icon: Shield,
-    title: 'Internal Knowledge Base AI',
-    description: 'RAG-powered answers that stay accurate with your docs.',
-  },
-]
 
 
 const containerVariants = {
@@ -49,8 +25,14 @@ const itemVariants = {
 }
 
 export function Demo() {
+  const videoSrc = `${import.meta.env.BASE_URL}videos/buzzlemax-ai-demo.mp4`
   const ref = React.useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+
+  const scrollToContactSales = () => {
+    const el = document.getElementById('contact-sales') || document.getElementById('contact')
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   return (
     <section id="demo" className="py-24 lg:py-32 bg-muted/30">
@@ -60,17 +42,16 @@ export function Demo() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-10"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
             See{' '}
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Buzzlemax AI
-            </span>{' '}
-            in Action
+              BuzzleMax AI In Action
+            </span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Watch how our AI transforms your business workflow and helps you achieve more.
+            Watch how our AI employees automate customer support, lead qualification, sales and business operations.
           </p>
         </motion.div>
 
@@ -81,51 +62,91 @@ export function Demo() {
           animate={isInView ? 'visible' : 'hidden'}
           className="space-y-12"
         >
-          <motion.div variants={itemVariants} className="relative">
-            <Card className="overflow-hidden border-border/50 shadow-2xl">
-              <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="relative z-10"
-                >
-                  <Button
-                    size="lg"
-                    className="h-16 w-16 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all"
-                  >
-                    <Play className="h-6 w-6 fill-current ml-1" />
-                  </Button>
-                </motion.div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-3/4 h-3/4 bg-background/50 rounded-lg border-2 border-border/30 backdrop-blur-sm" />
-                </div>
-                <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm text-muted-foreground">
-                  <Maximize2 className="h-4 w-4" />
-                  <span>Interactive Demo</span>
+          <motion.div
+            variants={itemVariants}
+            className="relative"
+            whileHover={{ y: -6 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+          >
+            <div className="mx-auto w-full max-w-[1200px]">
+              <div className="glass rounded-[28px] border-white/15 shadow-[0_30px_120px_-60px_rgba(0,0,0,0.65)] overflow-hidden group">
+                {/* Poster / loading skeleton */}
+                <div className="relative">
+                  <div className="absolute inset-0">
+                    <div className="h-full w-full bg-gradient-to-br from-primary/15 via-background/60 to-background/20" />
+                    <div className="absolute inset-0 opacity-80 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
+                  </div>
+
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="h-20 w-20 rounded-full bg-background/60 backdrop-blur-sm ring-1 ring-white/20 shadow-lg flex items-center justify-center">
+                      <span className="text-2xl">▶</span>
+                    </div>
+                  </div>
+
+                  <div className="absolute inset-0 flex items-start justify-end p-5">
+                    <div className="rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-muted-foreground">
+                      Powered by BuzzleMax
+                    </div>
+                  </div>
+
+                  <div className="absolute inset-0 bg-background/30 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-0" />
+
+                  <div className="relative">
+                    <video
+                      src={videoSrc}
+                      controls
+                      preload="metadata"
+                      playsInline
+                      muted
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
+            </div>
+          </motion.div>
+
+          <motion.div variants={containerVariants} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="h-full border-white/15 bg-background/40 glass rounded-[28px] shadow-[0_24px_80px_-32px_rgba(15,23,42,0.45)]">
+              <CardContent className="p-6">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-4">
+                  ⚡
+                </div>
+                <h3 className="font-semibold mb-2">AI Automation</h3>
+              </CardContent>
+            </Card>
+
+            <Card className="h-full border-white/15 bg-background/40 glass rounded-[28px] shadow-[0_24px_80px_-32px_rgba(15,23,42,0.45)]">
+              <CardContent className="p-6">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-4">
+                  💬
+                </div>
+                <h3 className="font-semibold mb-2">AI Customer Support</h3>
+              </CardContent>
+            </Card>
+
+            <Card className="h-full border-white/15 bg-background/40 glass rounded-[28px] shadow-[0_24px_80px_-32px_rgba(15,23,42,0.45)]">
+              <CardContent className="p-6">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-4">
+                  📈
+                </div>
+                <h3 className="font-semibold mb-2">AI Sales Assistant</h3>
+              </CardContent>
             </Card>
           </motion.div>
 
-          <motion.div
-            variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
-            {demoFeatures.map((feature) => {
-              const Icon = feature.icon
-              return (
-                <motion.div key={feature.title} variants={itemVariants}>
-                  <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/50">
-                    <CardContent className="pt-6">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary mb-4">
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <h3 className="font-semibold mb-2">{feature.title}</h3>
-                      <p className="text-sm text-muted-foreground">{feature.description}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              )
-            })}
+          <motion.div variants={itemVariants} className="flex justify-center pt-2">
+            <Button
+              size="lg"
+              className="rounded-[28px] px-8 py-4 shadow-2xl bg-primary hover:bg-primary/90 text-primary-foreground"
+              onClick={scrollToContactSales}
+            >
+              Book a Free Consultation
+            </Button>
           </motion.div>
         </motion.div>
       </div>
