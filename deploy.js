@@ -71,6 +71,10 @@ try {
     fs.copyFileSync(configPath, path.join(worktreePath, '_config.yml'));
   }
 
+  // Force rebuild by updating a timestamp file
+  const timestamp = new Date().toISOString();
+  fs.writeFileSync(path.join(worktreePath, '.build-timestamp'), timestamp);
+
   // Add and commit
   execSync('git add -A', { cwd: worktreePath, stdio: 'inherit' });
   try {
