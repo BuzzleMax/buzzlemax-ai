@@ -1,0 +1,2 @@
+# DISABLED - using manual deploy.js instead
+# This workflow was causing incorrect base path (/buzzlemax-ai/) in deployment
