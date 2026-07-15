@@ -116,8 +116,8 @@ export const PRICING_PLANS = [
 
 
 export const STATS = [
-  { label: 'Leads Qualified', value: '48K+' },
-  { label: 'Appointments Booked', value: '12K+' },
+  { label: 'Leads Qualified', value: '1' },
+  { label: 'Appointments Booked', value: '1' },
   { label: 'Support Deflection', value: '63%' },
   { label: 'Avg. Response Time', value: '1.2s' },
 ]
