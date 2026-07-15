@@ -12,6 +12,7 @@ import { CTASection } from '@/components/landing/CTASection'
 import { AISolutions } from '@/components/landing/AISolutions'
 import { FAQ } from '@/components/landing/FAQ'
 import { Contact } from '@/components/landing/Contact'
+import { MeetTheTeam } from '@/components/landing/MeetTheTeam'
 import { Footer } from '@/components/landing/Footer'
 import { ContactSalesModal } from '@/components/landing/ContactSalesModal'
 
@@ -38,6 +39,7 @@ export function LandingPage() {
         <AISolutions onContactSales={openContactSales} />
         <FAQ />
         <Contact />
+        <MeetTheTeam />
         <CTASection onContactSales={openContactSales} />
       </main>
       <Footer />

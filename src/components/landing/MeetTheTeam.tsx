@@ -1,0 +1,166 @@
+import * as React from 'react'
+import { motion, useInView } from 'framer-motion'
+import { cn } from '@/lib/utils'
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
+    },
+  },
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+}
+
+const teamMembers = [
+  {
+    name: 'Swapnanil',
+    role: 'Founder & AI Solutions',
+    bio: 'Building modern AI systems, automation solutions, and premium web experiences for businesses worldwide.',
+    skills: ['AI Automation', 'React', 'Next.js', 'Tailwind CSS', 'UI/UX'],
+    image: '/images/swapnanil.jpg',
+  },
+  {
+    name: 'Dibyajyoti',
+    role: 'Frontend Developer',
+    bio: 'Focused on building responsive, fast, scalable frontend applications and beautiful user interfaces.',
+    skills: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Frontend Development'],
+  },
+]
+
+export function MeetTheTeam() {
+  const ref = React.useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-100px' })
+
+  return (
+    <section id="team" className="py-24 lg:py-32 relative">
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/5" />
+        <motion.div
+          animate={{
+            scale: [1, 1.05, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-1/3 left-1/4 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute bottom-1/3 right-1/4 h-96 w-96 rounded-full bg-primary/10 blur-3xl"
+        />
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-black">
+            Meet the Team
+          </h2>
+          <p className="text-lg text-gray-800 max-w-2xl mx-auto">
+            The people building modern AI solutions and premium digital experiences.
+          </p>
+        </motion.div>
+
+        <motion.div
+          ref={ref}
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto"
+        >
+          {teamMembers.map((member, index) => (
+            <motion.div
+              key={index}
+              variants={cardVariants}
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className="group"
+            >
+              <div
+                className={cn(
+                  'glass rounded-2xl p-8 shadow-2xl border border-white/10',
+                  'transition-all duration-300',
+                  'hover:shadow-3xl hover:border-white/20'
+                )}
+              >
+                <div className="flex flex-col items-center text-center">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative mb-6"
+                  >
+                    {member.image ? (
+                      <>
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="h-36 w-36 rounded-full object-cover border-2 border-amber-500/50 shadow-2xl"
+                          style={{
+                            boxShadow: '0 0 20px rgba(245, 158, 11, 0.3), 0 0 40px rgba(245, 158, 11, 0.1)',
+                          }}
+                        />
+                        <div className="absolute inset-0 h-36 w-36 rounded-full bg-gradient-to-br from-amber-500/20 to-transparent blur-xl -z-10 opacity-50" />
+                      </>
+                    ) : (
+                      <>
+                        <div className="h-32 w-32 rounded-full bg-gradient-to-br from-white/20 to-white/5 border-2 border-white/20 flex items-center justify-center shadow-2xl">
+                          <span className="text-4xl font-bold text-white/90">
+                            {member.name.charAt(0)}
+                          </span>
+                        </div>
+                        <div className="absolute inset-0 h-32 w-32 rounded-full bg-gradient-to-br from-primary/20 to-transparent blur-xl -z-10 opacity-50" />
+                      </>
+                    )}
+                  </motion.div>
+
+                  <h3 className="text-2xl font-bold mb-2 text-black">
+                    {member.name}
+                  </h3>
+                  <p className="text-sm font-medium text-black mb-4 uppercase tracking-wider">
+                    {member.role}
+                  </p>
+                  <p className="text-gray-800 mb-6 leading-relaxed">
+                    {member.bio}
+                  </p>
+
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {member.skills.map((skill, skillIndex) => (
+                      <motion.span
+                        key={skillIndex}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.5 + skillIndex * 0.1, duration: 0.3 }}
+                        className="inline-flex items-center rounded-full border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-black backdrop-blur-sm"
+                      >
+                        {skill}
+                      </motion.span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  )
+}
