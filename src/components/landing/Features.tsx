@@ -45,7 +45,7 @@ export function Features() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="features" className="py-24 lg:py-32">
+    <section id="features" className="py-24 lg:py-32" aria-labelledby="features-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -54,16 +54,15 @@ export function Features() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+          <h2 id="features-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 tracking-tight">
             Everything You Need to{' '}
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               Scale
             </span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Premium AI automation for modern teams—chatbots, voice agents, customer support AI, lead qualification, and workflow automation across every channel.
           </p>
-
         </motion.div>
 
         <motion.div
@@ -77,12 +76,12 @@ export function Features() {
             const Icon = iconMap[feature.icon] || Sparkles
             return (
               <motion.div key={feature.title} variants={cardVariants}>
-                <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/50">
+                <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/50 hover:border-primary/30">
                   <CardHeader>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary mb-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary mb-4 transition-colors hover:bg-primary/20">
                       <Icon className="h-6 w-6" />
                     </div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                    <CardTitle className="text-xl font-semibold tracking-tight">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed">

@@ -9,7 +9,7 @@ type CTASectionProps = {
 export function CTASection({ onContactSales }: CTASectionProps) {
 
   return (
-    <section className="relative py-24 lg:py-32 overflow-hidden">
+    <section className="relative py-24 lg:py-32 overflow-hidden" aria-labelledby="cta-heading">
       <div className="absolute inset-0 -z-10">
         <motion.div
           animate={{
@@ -29,7 +29,7 @@ export function CTASection({ onContactSales }: CTASectionProps) {
           transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="text-center"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-foreground">
+          <h2 id="cta-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-foreground tracking-tight">
             Ready to{' '}
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               Transform
@@ -43,7 +43,7 @@ export function CTASection({ onContactSales }: CTASectionProps) {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               size="lg"
-              className="w-full sm:w-auto text-base px-8 py-3 gap-2 group"
+              className="w-full sm:w-auto text-base px-8 py-3 gap-2 group font-semibold shadow-lg hover:shadow-xl transition-shadow active:scale-95"
               onClick={() => onContactSales()}
             >
               Schedule Consultation
@@ -53,7 +53,7 @@ export function CTASection({ onContactSales }: CTASectionProps) {
             <Button 
               variant="outline" 
               size="lg" 
-              className="w-full sm:w-auto text-base px-8 py-3"
+              className="w-full sm:w-auto text-base px-8 py-3 font-medium hover:shadow-lg transition-shadow active:scale-95"
               onClick={() => onContactSales()}
             >
               Schedule Demo

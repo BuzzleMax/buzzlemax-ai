@@ -43,7 +43,7 @@ export function MeetTheTeam() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="team" className="py-24 lg:py-32 relative">
+    <section id="team" className="section relative" aria-labelledby="team-heading">
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/5" />
         <motion.div
@@ -64,18 +64,19 @@ export function MeetTheTeam() {
         />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="section-header"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-black">
+          <span className="eyebrow mb-4">Team</span>
+          <h2 id="team-heading" className="section-title">
             Meet the Team
           </h2>
-          <p className="text-lg text-gray-800 max-w-2xl mx-auto">
+          <p className="section-description">
             The people building modern AI solutions and premium digital experiences.
           </p>
         </motion.div>
@@ -94,9 +95,9 @@ export function MeetTheTeam() {
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
               className="group"
             >
-              <div
+              <article
                 className={cn(
-                  'glass rounded-2xl p-8 shadow-2xl border border-white/10',
+                  'surface-card p-8',
                   'transition-all duration-300',
                   'hover:shadow-3xl hover:border-white/20'
                 )}
@@ -112,6 +113,10 @@ export function MeetTheTeam() {
                         <img
                           src={member.image}
                           alt={member.name}
+                          loading="lazy"
+                          decoding="async"
+                          width="144"
+                          height="144"
                           className="h-36 w-36 rounded-full object-cover border-2 border-amber-500/50 shadow-2xl"
                           style={{
                             boxShadow: '0 0 20px rgba(245, 158, 11, 0.3), 0 0 40px rgba(245, 158, 11, 0.1)',
@@ -122,7 +127,7 @@ export function MeetTheTeam() {
                     ) : (
                       <>
                         <div className="h-32 w-32 rounded-full bg-gradient-to-br from-white/20 to-white/5 border-2 border-white/20 flex items-center justify-center shadow-2xl">
-                          <span className="text-4xl font-bold text-white/90">
+                          <span className="text-4xl font-bold text-foreground">
                             {member.name.charAt(0)}
                           </span>
                         </div>
@@ -131,13 +136,13 @@ export function MeetTheTeam() {
                     )}
                   </motion.div>
 
-                  <h3 className="text-2xl font-bold mb-2 text-black">
+                  <h3 className="mb-2 text-2xl font-bold text-foreground">
                     {member.name}
                   </h3>
-                  <p className="text-sm font-medium text-black mb-4 uppercase tracking-wider">
+                  <p className="mb-4 text-sm font-medium uppercase tracking-wider text-muted-foreground">
                     {member.role}
                   </p>
-                  <p className="text-gray-800 mb-6 leading-relaxed">
+                  <p className="mb-6 leading-relaxed text-muted-foreground">
                     {member.bio}
                   </p>
 
@@ -149,14 +154,14 @@ export function MeetTheTeam() {
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.5 + skillIndex * 0.1, duration: 0.3 }}
-                        className="inline-flex items-center rounded-full border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-black backdrop-blur-sm"
+                        className="inline-flex items-center rounded-full border border-border/70 bg-background/80 px-3 py-1 text-xs font-medium text-foreground backdrop-blur-sm"
                       >
                         {skill}
                       </motion.span>
                     ))}
                   </div>
                 </div>
-              </div>
+              </article>
             </motion.div>
           ))}
         </motion.div>

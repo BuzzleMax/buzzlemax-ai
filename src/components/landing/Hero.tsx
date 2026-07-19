@@ -48,6 +48,7 @@ export function Hero({ onContactSales }: HeroProps) {
     <section
       ref={ref}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      aria-labelledby="hero-heading"
     >
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/5" />
@@ -86,6 +87,7 @@ export function Hero({ onContactSales }: HeroProps) {
           <motion.h1
             variants={itemVariants}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
+            id="hero-heading"
           >
             <span className="block text-foreground">Transform Your</span>
             <span className="block bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
@@ -103,7 +105,7 @@ export function Hero({ onContactSales }: HeroProps) {
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               size="lg"
-              className="w-full sm:w-auto text-base px-8 py-3"
+              className="w-full sm:w-auto text-base px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-shadow"
               onClick={() => onContactSales()}
             >
               Schedule Consultation
@@ -111,10 +113,9 @@ export function Hero({ onContactSales }: HeroProps) {
             <Button 
               variant="outline" 
               size="lg" 
-              className="w-full sm:w-auto text-base px-8 py-3 gap-2"
+              className="w-full sm:w-auto text-base px-8 py-3 gap-2 font-medium"
               onClick={() => document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' })}
             >
-
               <Play className="h-4 w-4 fill-current" />
               Watch Demo
             </Button>
@@ -152,7 +153,7 @@ export function Hero({ onContactSales }: HeroProps) {
                   </div>
                 </div>
                 <div className="flex items-end justify-between">
-                  <span className="text-xs text-muted-foreground">AI Powered</span>
+                  <span className="text-xs text-muted-foreground font-medium">AI Powered</span>
                 </div>
               </motion.div>
             )

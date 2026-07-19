@@ -35,22 +35,23 @@ export function Demo() {
   }
 
   return (
-    <section id="demo" className="py-24 lg:py-32 bg-muted/30">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="demo" className="section bg-muted/30" aria-labelledby="demo-heading">
+      <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10"
+          className="section-header"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+          <span className="eyebrow mb-4">Demo</span>
+          <h2 id="demo-heading" className="section-title">
             See{' '}
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               BuzzleMax AI In Action
             </span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="section-description">
             Watch how our AI employees automate customer support, lead qualification, sales and business operations.
           </p>
         </motion.div>
@@ -98,6 +99,7 @@ export function Demo() {
                       preload="metadata"
                       playsInline
                       muted
+                      aria-label="BuzzleMax AI product demo video"
                       style={{
                         width: "100%",
                         height: "100%",
@@ -142,7 +144,7 @@ export function Demo() {
           <motion.div variants={itemVariants} className="flex justify-center pt-2">
             <Button
               size="lg"
-              className="rounded-[28px] px-8 py-4 shadow-2xl bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="rounded-[28px] px-8 py-4 shadow-2xl"
               onClick={scrollToContactSales}
             >
               Book a Free Consultation

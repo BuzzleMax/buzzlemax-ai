@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { PRICING_PLANS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { Check, Sparkles } from 'lucide-react'
+import { Check, Sparkles, ArrowRight } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { navigateToHref } from '@/lib/navigation'
 
 type PricingProps = {
   onContactSales: (plan?: string) => void
@@ -33,21 +35,25 @@ const cardVariants = {
 export function Pricing({ onContactSales }: PricingProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const navigate = useNavigate()
 
   return (
-    <section id="pricing" className="py-24 lg:py-32 bg-black">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="pricing" className="section bg-black" aria-labelledby="pricing-heading">
+      <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-20"
+          className="section-header"
         >
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-white tracking-tight">
+          <span className="mb-4 inline-flex w-fit items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/80">
+            Pricing
+          </span>
+          <h2 id="pricing-heading" className="section-title text-white">
             Premium AI Automation
           </h2>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="section-description text-gray-400">
             Custom-built solutions for measurable ROI, increased conversions, and scalable growth.
           </p>
         </motion.div>
@@ -117,13 +123,18 @@ export function Pricing({ onContactSales }: PricingProps) {
                       Monthly
                     </p>
                     <div className="flex items-baseline justify-center gap-1">
-                      {plan.isEnterprise && (
-                        <span className="text-sm text-gray-400 mr-1">Starting at</span>
+                      {plan.isEnterprise ? (
+                        <span className="text-2xl font-bold text-white tracking-tight">
+                          Custom Retainer
+                        </span>
+                      ) : (
+                        <>
+                          <span className="text-4xl font-bold text-white tracking-tight">
+                            ${plan.price.toLocaleString()}
+                          </span>
+                          <span className="text-gray-400">/month</span>
+                        </>
                       )}
-                      <span className="text-4xl font-bold text-white tracking-tight">
-                        ${plan.price.toLocaleString()}
-                      </span>
-                      <span className="text-gray-400">/month</span>
                     </div>
                   </div>
                 </CardHeader>
@@ -139,12 +150,30 @@ export function Pricing({ onContactSales }: PricingProps) {
                       </li>
                     ))}
                   </ul>
+                  {plan.usage && plan.usage.length > 0 && (
+                    <div className="mb-8 pt-4 border-t border-white/10">
+                      <p className="text-xs uppercase tracking-widest text-gray-500 mb-3">
+                        Usage Included
+                      </p>
+                      <ul className="space-y-2">
+                        {plan.usage.map((usage, index) => (
+                          <li 
+                            key={`${usage}-${index}`} 
+                            className="flex items-start gap-3"
+                          >
+                            <Check className="h-4 w-4 text-white/60 shrink-0 mt-0.5" />
+                            <span className="text-sm text-gray-400 leading-relaxed">{usage}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                   <Button
                     className={cn(
-                      'w-full font-semibold tracking-wide transition-all duration-300',
+                      'w-full font-semibold tracking-wide transition-all duration-300 active:scale-95',
                       plan.popular
-                        ? 'bg-white text-black hover:bg-white/90 shadow-lg shadow-white/20'
-                        : 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-white/30'
+                        ? 'bg-white text-black hover:bg-white/90 shadow-lg shadow-white/20 hover:shadow-xl'
+                        : 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-white/30 hover:shadow-lg'
                     )}
                     size="lg"
                     onClick={() => onContactSales(plan.name)}
@@ -157,6 +186,23 @@ export function Pricing({ onContactSales }: PricingProps) {
           ))}
         </motion.div>
 
+        {/* Web Development Cross-link */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="max-w-2xl mx-auto text-center mb-12"
+        >
+          <p className="text-sm text-gray-400 mb-3">
+            Need a website first?
+          </p>
+          <Button variant="outline" onClick={() => navigateToHref(navigate, '/web-development')}>
+            Explore Custom Web Development
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </motion.div>
+
         {/* Guarantee Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -167,6 +213,19 @@ export function Pricing({ onContactSales }: PricingProps) {
         >
           <p className="text-lg text-gray-300 leading-relaxed mb-8">
             Every solution is custom-built for your business. We focus on measurable ROI, increased conversions, reduced workload, and scalable AI automation.
+          </p>
+        </motion.div>
+
+        {/* Usage Notice */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="max-w-3xl mx-auto text-center mb-12"
+        >
+          <p className="text-sm text-gray-400 leading-relaxed">
+            Plans include generous monthly AI usage. Additional AI conversations, voice minutes or third-party platform costs may incur overage charges depending on usage.
           </p>
         </motion.div>
 
@@ -188,4 +247,3 @@ export function Pricing({ onContactSales }: PricingProps) {
     </section>
   )
 }
-

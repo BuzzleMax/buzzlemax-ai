@@ -1,14 +1,25 @@
 import * as React from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Loader2, Mail, Send } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { AlertCircle, CheckCircle2, Loader2, Mail, Send } from 'lucide-react'
 import { toast } from 'sonner'
+
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent } from '@/components/ui/card'
 import { COMPANY_INFO } from '@/lib/constants'
-import { validation } from '@/lib/validation'
-import { sendContactFormEmail, type ContactFormData } from '@/services/email'
+import { contactFormSchema, type ContactFormSchema } from '@/lib/validation'
+import { sendContactFormEmail } from '@/services/email'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -34,102 +45,97 @@ export function Contact() {
   const ref = React.useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const contactEmail = COMPANY_INFO.contact.email
-  const [isSubmitting, setIsSubmitting] = React.useState(false)
-  const [formData, setFormData] = React.useState<ContactFormData>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    subject: '',
-    message: '',
-  })
+  const [submitState, setSubmitState] = React.useState<'idle' | 'success' | 'error'>('idle')
+  const [submitMessage, setSubmitMessage] = React.useState('')
 
-  const handleInputChange =
-    (field: keyof ContactFormData) =>
-    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: event.target.value,
-      }))
-    }
-
-  const resetForm = () => {
-    setFormData({
+  const form = useForm<ContactFormSchema>({
+    mode: 'onBlur',
+    defaultValues: {
       firstName: '',
       lastName: '',
       email: '',
       subject: '',
       message: '',
+    },
+  })
+
+  const messageLength = form.watch('message')?.length ?? 0
+
+  const setSchemaErrors = (values: ContactFormSchema) => {
+    const result = contactFormSchema.safeParse(values)
+
+    if (result.success) return result.data
+
+    result.error.issues.forEach((issue) => {
+      const fieldName = issue.path[0]
+      if (typeof fieldName === 'string') {
+        form.setError(fieldName as keyof ContactFormSchema, {
+          type: 'manual',
+          message: issue.message,
+        })
+      }
     })
-  }
-
-  const validateForm = (): string | null => {
-    const firstNameError = validation.required(formData.firstName, 'First Name')
-    if (firstNameError) return firstNameError
-
-    const lastNameError = validation.required(formData.lastName, 'Last Name')
-    if (lastNameError) return lastNameError
-
-    const emailError = validation.email(formData.email.trim())
-    if (emailError) return emailError
-
-    const subjectError = validation.required(formData.subject, 'Subject')
-    if (subjectError) return subjectError
-
-    const messageError = validation.required(formData.message, 'Message')
-    if (messageError) return messageError
 
     return null
   }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const handleSubmit = async (values: ContactFormSchema) => {
+    setSubmitState('idle')
+    setSubmitMessage('')
 
-    const validationError = validateForm()
-    if (validationError) {
-      toast.error(validationError)
+    const parsedValues = setSchemaErrors(values)
+    if (!parsedValues) {
+      setSubmitState('error')
+      setSubmitMessage('Please review the highlighted fields and try again.')
+      toast.error('Please review the highlighted fields and try again.')
       return
     }
 
-    setIsSubmitting(true)
-
     try {
-      await sendContactFormEmail({
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
-        email: formData.email.trim(),
-        subject: formData.subject.trim(),
-        message: formData.message.trim(),
-      })
-
+      await sendContactFormEmail(parsedValues)
+      form.reset()
+      setSubmitState('success')
+      setSubmitMessage('Your message is on its way. We usually reply within one business day.')
       toast.success('Your message has been sent successfully. We’ll get back to you within 24 hours.')
-      resetForm()
     } catch (error) {
-      toast.error(
+      const message =
         (error as { message?: string })?.message || 'Failed to send message. Please try again.'
-      )
-    } finally {
-      setIsSubmitting(false)
+      setSubmitState('error')
+      setSubmitMessage(message)
+      toast.error(message)
     }
   }
 
+  React.useEffect(() => {
+    const subscription = form.watch(() => {
+      if (submitState !== 'idle') {
+        setSubmitState('idle')
+        setSubmitMessage('')
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [form, submitState])
+
   return (
-    <section id="contact" className="py-24 lg:py-32 bg-muted/30">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="contact" className="section bg-muted/30" aria-labelledby="contact-heading">
+      <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="section-header"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+          <span className="eyebrow mb-4">Contact</span>
+          <h2 id="contact-heading" className="section-title">
             Get in{' '}
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               Touch
             </span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+          <p className="section-description">
+            Have questions about AI automation or web development? Send your details and get a direct response from our team.
           </p>
         </motion.div>
 
@@ -141,19 +147,17 @@ export function Contact() {
           className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-10"
         >
           <motion.div variants={itemVariants}>
-            <Card className="glass h-full overflow-hidden rounded-3xl border-white/20 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.45)]">
+            <Card className="surface-card h-full overflow-hidden">
               <CardContent className="flex h-full flex-col justify-between p-6 sm:p-8 lg:p-10">
                 <div className="space-y-8">
                   <div className="space-y-4">
-                    <span className="inline-flex w-fit items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                      Contact Us
-                    </span>
+                    <span className="eyebrow">Contact Us</span>
                     <div className="space-y-3">
                       <h3 className="max-w-sm text-3xl font-bold tracking-tight sm:text-4xl">
                         Have a project in mind?
                       </h3>
                       <p className="max-w-md text-base leading-7 text-muted-foreground">
-                        Send us an email and we’ll help you map the right AI automation setup for your business.
+                        Tell us what you are building, what is blocking growth, and where you need automation or development support.
                       </p>
                     </div>
                   </div>
@@ -178,7 +182,7 @@ export function Contact() {
                   </div>
 
                   <p className="text-sm leading-6 text-muted-foreground">
-                    We typically respond within 24 hours.
+                    No spam. No outsourcing maze. You hear directly from the team at {contactEmail}.
                   </p>
                 </div>
               </CardContent>
@@ -186,72 +190,156 @@ export function Contact() {
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <Card className="glass rounded-3xl border-white/15 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.4)]">
+            <Card className="surface-card">
               <CardContent className="p-6 sm:p-8">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium mb-2 block">First Name</label>
-                      <Input
-                        placeholder="John"
-                        value={formData.firstName}
-                        onChange={handleInputChange('firstName')}
-                        disabled={isSubmitting}
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5" noValidate>
+                    {submitState !== 'idle' && submitMessage ? (
+                      <motion.div
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`flex items-start gap-3 rounded-2xl border px-4 py-3 text-sm ${
+                          submitState === 'success'
+                            ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
+                            : 'border-destructive/30 bg-destructive/10 text-destructive'
+                        }`}
+                        aria-live="polite"
+                      >
+                        {submitState === 'success' ? (
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+                        ) : (
+                          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                        )}
+                        <span>{submitMessage}</span>
+                      </motion.div>
+                    ) : null}
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <FormField
+                        control={form.control}
+                        name="firstName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>First Name</FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="John"
+                                autoComplete="given-name"
+                                aria-required="true"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="lastName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Last Name</FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="Doe"
+                                autoComplete="family-name"
+                                aria-required="true"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
-                    <div>
-                      <label className="text-sm font-medium mb-2 block">Last Name</label>
-                      <Input
-                        placeholder="Doe"
-                        value={formData.lastName}
-                        onChange={handleInputChange('lastName')}
-                        disabled={isSubmitting}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Email</label>
-                    <Input
-                      type="email"
-                      placeholder="john@example.com"
-                      value={formData.email}
-                      onChange={handleInputChange('email')}
-                      disabled={isSubmitting}
+
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="email"
+                              placeholder="john@example.com"
+                              autoComplete="email"
+                              inputMode="email"
+                              aria-required="true"
+                            />
+                          </FormControl>
+                          <FormDescription>We reply directly to this address.</FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Subject</label>
-                    <Input
-                      placeholder="How can we help you?"
-                      value={formData.subject}
-                      onChange={handleInputChange('subject')}
-                      disabled={isSubmitting}
+
+                    <FormField
+                      control={form.control}
+                      name="subject"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subject</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="How can we help you?"
+                              aria-required="true"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Message</label>
-                    <Textarea
-                      placeholder="Tell us about your project..."
-                      rows={4}
-                      value={formData.message}
-                      onChange={handleInputChange('message')}
-                      disabled={isSubmitting}
+
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-center justify-between gap-3">
+                            <FormLabel>Message</FormLabel>
+                            <span className="text-xs text-muted-foreground">{messageLength}/1200</span>
+                          </div>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              rows={6}
+                              placeholder="Tell us about your goals, current funnel, and what you want to improve."
+                              aria-required="true"
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Include your timeline, current challenges, and desired outcome.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4 mr-2" />
-                        Send Message
-                      </>
-                    )}
-                  </Button>
-                </form>
+
+                    <Button
+                      type="submit"
+                      className="w-full font-semibold"
+                      size="lg"
+                      disabled={form.formState.isSubmitting}
+                      aria-busy={form.formState.isSubmitting}
+                    >
+                      {form.formState.isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Sending Message
+                        </>
+                      ) : (
+                        <>
+                          <Send className="mr-2 h-4 w-4" />
+                          Send Message
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </Form>
               </CardContent>
             </Card>
           </motion.div>

@@ -69,6 +69,18 @@ export default {
           '0%': { backgroundPosition: '-1000px 0' },
           '100%': { backgroundPosition: '1000px 0' },
         },
+        'pulse-slow': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.7' },
+        },
+        'float': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        'bounce-slow': {
+          '0%, 100%': { transform: 'translateY(-5%)' },
+          '50%': { transform: 'translateY(0)' },
+        },
       },
       animation: {
         'fade-in': 'fade-in 0.5s ease-out',
@@ -77,6 +89,9 @@ export default {
         'slide-in-left': 'slide-in-left 0.3s ease-out',
         'scale-in': 'scale-in 0.2s ease-out',
         'shimmer': 'shimmer 2s infinite linear',
+        'pulse-slow': 'pulse-slow 3s ease-in-out infinite',
+        'float': 'float 3s ease-in-out infinite',
+        'bounce-slow': 'bounce-slow 2s ease-in-out infinite',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

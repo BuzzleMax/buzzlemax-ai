@@ -1,24 +1,9 @@
 import { Sparkles, Mail, Github, Twitter, Linkedin, Instagram } from 'lucide-react'
 import { COMPANY_INFO } from '@/lib/constants'
 import { Separator } from '@/components/ui/separator'
-
-const footerLinks = {
-
-  Product: [
-    { name: 'Features', href: '#features' },
-    { name: 'Solutions', href: '#solutions' },
-    { name: 'How It Works', href: '#how-it-works' },
-    { name: 'Pricing', href: '#pricing' },
-  ],
-  Resources: [
-    { name: 'FAQ', href: '#faq' },
-    { name: 'Contact', href: '#contact' },
-  ],
-  Legal: [
-    { name: 'Privacy Policy', href: '#contact' },
-    { name: 'Terms of Service', href: '#contact' },
-  ],
-}
+import { useNavigate } from 'react-router-dom'
+import { navigateToHref } from '@/lib/navigation'
+import { FOOTER_LINK_GROUPS } from '@/lib/site'
 
 const socialLinks = [
   { icon: Instagram, href: 'https://www.instagram.com/buzzlemax.official/', label: 'Instagram' },
@@ -29,6 +14,8 @@ const socialLinks = [
 
 
 export function Footer() {
+  const navigate = useNavigate()
+
   return (
     <footer className="bg-muted/30 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
@@ -63,26 +50,21 @@ export function Footer() {
             </div>
           </div>
 
-          {Object.entries(footerLinks).map(([category, links]) => (
+          {Object.entries(FOOTER_LINK_GROUPS).map(([category, links]) => (
             <div key={category}>
               <h4 className="text-sm font-semibold mb-4">{category}</h4>
               <ul className="space-y-3">
                 {links.map((link) => (
-                  <li key={link.name}>
+                  <li key={link.label}>
                     <a
                       href={link.href}
                       onClick={(e) => {
-                        if (link.href.startsWith('#')) {
-                          e.preventDefault()
-                          const element = document.querySelector(link.href)
-                          if (element) {
-                            element.scrollIntoView({ behavior: 'smooth' })
-                          }
-                        }
+                        e.preventDefault()
+                        navigateToHref(navigate, link.href)
                       }}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+                      className="cursor-pointer text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
-                      {link.name}
+                      {link.label}
                     </a>
                   </li>
                 ))}

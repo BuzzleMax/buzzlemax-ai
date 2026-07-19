@@ -57,6 +57,7 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    text-rendering: optimizeLegibility;
   }
   h1,
   h2,
@@ -64,7 +65,34 @@
   h4,
   h5,
   h6 {
-    @apply font-sans font-semibold;
+    @apply font-sans font-semibold tracking-tight;
+  }
+  h1 {
+    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl;
+  }
+  h2 {
+    @apply text-3xl sm:text-4xl md:text-5xl;
+  }
+  h3 {
+    @apply text-2xl sm:text-3xl md:text-4xl;
+  }
+  h4 {
+    @apply text-xl sm:text-2xl md:text-3xl;
+  }
+  p {
+    @apply leading-7 text-pretty;
+  }
+  a {
+    @apply transition-[color,opacity,transform] duration-200;
+  }
+  button {
+    @apply transition-all duration-200;
+  }
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+  :focus-visible {
+    scroll-margin-top: 7rem;
   }
 }
 
@@ -150,10 +178,28 @@
   }
 
   .section {
-    @apply py-16 md:py-24 lg:py-32;
+    @apply py-20 md:py-24 lg:py-28 xl:py-32;
   }
   .container {
     @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .section-header {
+    @apply mx-auto mb-12 max-w-3xl text-center md:mb-16 lg:mb-20;
+  }
+  .section-title {
+    @apply mb-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl;
+  }
+  .section-description {
+    @apply mx-auto max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg;
+  }
+  .surface-card {
+    @apply glass rounded-[28px] border-white/15 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.45)];
+  }
+  .eyebrow {
+    @apply inline-flex w-fit items-center rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary;
+  }
+  .interactive-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
   }
 }
 
@@ -167,8 +213,28 @@
   .glass {
     @apply bg-white/70 dark:bg-black/70 backdrop-blur-xl border border-white/20 dark:border-white/10;
   }
+  .hover-lift {
+    @apply transition-transform duration-300 ease-out hover:-translate-y-1;
+  }
+  .fade-mask-bottom {
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

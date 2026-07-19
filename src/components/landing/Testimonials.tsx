@@ -59,7 +59,7 @@ export function Testimonials() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="testimonials" className="py-24 lg:py-32 bg-muted/30">
+    <section id="testimonials" className="py-24 lg:py-32 bg-muted/30" aria-labelledby="testimonials-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -68,16 +68,15 @@ export function Testimonials() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+          <h2 id="testimonials-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 tracking-tight">
             Loved by{' '}
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               Businesses
             </span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Built for teams that want measurable pipeline growth—AI support, voice agents, lead qualification, and CRM automation.
           </p>
-
         </motion.div>
 
         <motion.div
@@ -89,7 +88,7 @@ export function Testimonials() {
         >
           {testimonials.map((testimonial) => (
             <motion.div key={testimonial.name} variants={cardVariants}>
-              <Card className="h-full transition-all duration-300 hover:shadow-lg border-border/50 relative">
+              <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/50 hover:border-primary/30 relative">
                 <CardContent className="pt-6">
                   <Quote className="absolute top-6 right-6 h-8 w-8 text-primary/10" />
                   <p className="text-muted-foreground leading-relaxed mb-6 relative z-10">

@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import { toast } from 'sonner'
 
 type ThemeMode = 'light' | 'dark' | 'system'
 
@@ -44,10 +43,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     localStorage.setItem('buzzlemax-theme', theme)
-    toast.success(`${theme.charAt(0).toUpperCase() + theme.slice(1)} theme activated`, {
-      duration: 1500,
-      position: 'bottom-center',
-    })
   }, [theme])
 
   return (

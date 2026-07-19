@@ -15,6 +15,9 @@ import { Contact } from '@/components/landing/Contact'
 import { MeetTheTeam } from '@/components/landing/MeetTheTeam'
 import { Footer } from '@/components/landing/Footer'
 import { ContactSalesModal } from '@/components/landing/ContactSalesModal'
+import { PageSEO } from '@/components/common/PageSEO'
+import { COMPANY_INFO } from '@/lib/constants'
+import { DEFAULT_SEO, SITE_URL } from '@/lib/site'
 
 export function LandingPage() {
   const [contactSalesOpen, setContactSalesOpen] = React.useState(false)
@@ -27,8 +30,21 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageSEO
+        {...DEFAULT_SEO}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'ProfessionalService',
+          name: COMPANY_INFO.name,
+          description: COMPANY_INFO.description,
+          url: SITE_URL,
+          email: COMPANY_INFO.contact.email,
+          areaServed: 'Worldwide',
+          serviceType: ['AI Automation', 'Voice AI', 'CRM Automation', 'Web Development'],
+        }}
+      />
       <Navbar onContactSales={openContactSales} />
-      <main>
+      <main id="main-content">
         <Hero onContactSales={openContactSales} />
         <Stats />
         <Features />

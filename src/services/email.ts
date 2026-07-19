@@ -121,11 +121,10 @@ export type ContactSalesFormData = {
   company: string
   website: string
   email: string
-  phone: string | null
   businessType: string
   interestedService: string
   selectedPlan: string
-  monthlyRevenue: string | null
+  monthlyRevenue?: string | null
   projectDetails: string
 }
 
@@ -134,11 +133,10 @@ export async function sendContactSalesEmail(data: ContactSalesFormData): Promise
   const company = data.company.trim()
   const website = data.website.trim()
   const email = data.email.trim()
-  const phone = data.phone?.trim() || 'Not provided'
   const businessType = data.businessType.trim()
   const interestedService = data.interestedService.trim()
   const selectedPlan = data.selectedPlan.trim()
-  const monthlyRevenue = data.monthlyRevenue?.trim() || 'Not provided'
+  const monthlyRevenue = data.monthlyRevenue?.trim() ?? 'Not provided'
   const projectDetails = data.projectDetails.trim()
 
   await sendEmail({
@@ -154,7 +152,6 @@ export async function sendContactSalesEmail(data: ContactSalesFormData): Promise
     message: projectDetails,
     company,
     website,
-    phone,
     business_type: businessType,
     interestedService,
     selectedPlan,
