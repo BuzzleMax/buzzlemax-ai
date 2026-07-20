@@ -52,7 +52,7 @@ const services = [
   {
     icon: Layout,
     title: 'Landing Pages',
-    price: 'Starting at $990',
+    price: 'Starting at $100',
     description: 'High-converting landing pages designed to capture leads and drive action.',
     features: [
       'Custom design & copy',
@@ -67,7 +67,7 @@ const services = [
   {
     icon: Globe,
     title: 'Business Websites',
-    price: 'Starting at $2,500',
+    price: 'Starting at $1000',
     description: 'Professional multi-page websites that establish your brand and convert visitors.',
     features: [
       '5-10 custom pages',
