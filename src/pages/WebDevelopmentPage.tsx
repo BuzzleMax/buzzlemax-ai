@@ -148,24 +148,27 @@ const technologies = [
 const solutionShowcases = [
   {
     title: 'Conversion-Focused Landing Page',
-    category: 'Lead Generation',
+    category: 'Travel Agency',
     description: 'Premium landing pages engineered around trust signals, clear messaging, and stronger CTA hierarchy.',
     tags: ['Next.js', 'Stripe', 'AI'],
-    image: 'gradient-1'
+    image: 'gradient-1',
+    href: 'https://buzzlemax.github.io/meghalaya-holidays/'
   },
   {
-    title: 'SaaS Marketing Website',
-    category: 'Product Marketing',
-    description: 'High-performance sites that position software clearly and support premium product perception.',
+    title: 'Fast Portfolio Website',
+    category: 'Portfolio & Personal Branding',
+    description: 'High-performance Portfolio websites that makes you stand out and makes your Portfolio stand out.',
     tags: ['React', 'TypeScript', 'D3.js'],
-    image: 'gradient-2'
+    image: 'gradient-2',
+    href: 'https://buzzlemax.github.io/swapnanil-dowarah-portfolio/'
   },
   {
-    title: 'Modern Commerce Storefront',
-    category: 'E-commerce',
-    description: 'Fast storefront experiences with polished UX, stronger product storytelling, and scalable architecture.',
+    title: 'Real Estate Marketplace prototype',
+    category: 'Real Estate mock up',
+    description: 'Fast storefront experiences with polished UX, stronger product storytelling, and scalable architecture mock up made in 3 hours.',
     tags: ['Next.js', 'Framer Motion', 'Tailwind'],
-    image: 'gradient-3'
+    image: 'gradient-3',
+    href: 'https://buzzlemax.github.io/ghy-realtors-prototype/'
   }
 ]
 
@@ -609,16 +612,29 @@ export function WebDevelopmentPage() {
               className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
             >
               {solutionShowcases.map((project) => (
-                <motion.article key={project.title} variants={cardVariants}>
-                  <Card className="surface-card hover-lift overflow-hidden h-full">
-                    <div
-                      className={cn(
-                        'h-48 bg-gradient-to-br',
-                        project.image === 'gradient-1' && 'from-primary/25 to-primary/5',
-                        project.image === 'gradient-2' && 'from-blue-500/20 to-cyan-500/10',
-                        project.image === 'gradient-3' && 'from-emerald-500/20 to-teal-500/10'
-                      )}
-                    />
+                <motion.a
+                  key={project.title}
+                  variants={cardVariants}
+                  href={project.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View live demo: ${project.title}`}
+                  className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-[28px]"
+                >
+                  <Card className="surface-card overflow-hidden h-full cursor-pointer transition-all duration-300 ease-out group-hover:scale-[1.02] group-hover:-translate-y-2 group-hover:shadow-[0_0_40px_-8px_rgba(168,85,247,0.4)] group-hover:border-primary/30">
+                    <div className="relative">
+                      <div
+                        className={cn(
+                          'h-48 bg-gradient-to-br',
+                          project.image === 'gradient-1' && 'from-primary/25 to-primary/5',
+                          project.image === 'gradient-2' && 'from-blue-500/20 to-cyan-500/10',
+                          project.image === 'gradient-3' && 'from-emerald-500/20 to-teal-500/10'
+                        )}
+                      />
+                      <span className="absolute top-3 right-3 rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground opacity-0 shadow-lg transition-opacity duration-300 group-hover:opacity-100">
+                        Live Demo
+                      </span>
+                    </div>
                     <CardContent className="p-6">
                       <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary">
                         {project.category}
@@ -629,7 +645,7 @@ export function WebDevelopmentPage() {
                       <p className="mb-4 text-sm leading-7 text-muted-foreground">
                         {project.description}
                       </p>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="mb-5 flex flex-wrap gap-2">
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
@@ -639,9 +655,13 @@ export function WebDevelopmentPage() {
                           </span>
                         ))}
                       </div>
+                      <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all duration-300 ease-out group-hover:gap-3">
+                        ↗ View Live Website
+                        <ArrowRight className="h-4 w-4 transition-all duration-300 ease-out group-hover:translate-x-1" />
+                      </span>
                     </CardContent>
                   </Card>
-                </motion.article>
+                </motion.a>
               ))}
             </motion.div>
           </div>
