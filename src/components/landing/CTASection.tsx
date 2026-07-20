@@ -17,7 +17,7 @@ export function CTASection({ onContactSales }: CTASectionProps) {
             opacity: [0.2, 0.4, 0.2],
           }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-primary/30 blur-3xl"
+          className="absolute top-1/2 left-1/2 h-[min(560px,calc(100vw-4rem))] w-[min(560px,calc(100vw-4rem))] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/30 blur-3xl"
         />
       </div>
 
@@ -65,4 +65,3 @@ export function CTASection({ onContactSales }: CTASectionProps) {
     </section>
   )
 }
-

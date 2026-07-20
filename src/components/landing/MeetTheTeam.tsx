@@ -52,7 +52,7 @@ export function MeetTheTeam() {
             opacity: [0.3, 0.5, 0.3],
           }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/3 left-1/4 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
+          className="absolute top-1/3 left-1/4 h-[18rem] w-[18rem] rounded-full bg-primary/20 blur-3xl sm:h-96 sm:w-96"
         />
         <motion.div
           animate={{
@@ -60,7 +60,7 @@ export function MeetTheTeam() {
             opacity: [0.2, 0.4, 0.2],
           }}
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute bottom-1/3 right-1/4 h-96 w-96 rounded-full bg-primary/10 blur-3xl"
+          className="absolute bottom-1/3 right-1/4 h-[18rem] w-[18rem] rounded-full bg-primary/10 blur-3xl sm:h-96 sm:w-96"
         />
       </div>
 

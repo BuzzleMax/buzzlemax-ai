@@ -50,24 +50,45 @@ export function Hero({ onContactSales }: HeroProps) {
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       aria-labelledby="hero-heading"
     >
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/5" />
+      <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#7C3AED]/[0.05] via-background via-45% to-background" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_72%_52%_at_50%_34%,rgba(139,92,246,0.21),transparent_68%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_58%_42%_at_28%_30%,rgba(124,58,237,0.15),transparent_72%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_54%_38%_at_72%_30%,rgba(168,85,247,0.14),transparent_74%)]" />
         <motion.div
           animate={{
-            scale: [1, 1.05, 1],
-            opacity: [0.3, 0.5, 0.3],
+            x: ['-2%', '2%', '-2%'],
+            y: ['0%', '-3%', '0%'],
+            scale: [1, 1.04, 1],
+            opacity: [0.75, 0.9, 0.75],
           }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
+          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute left-1/2 top-[34%] h-[30rem] w-[calc(100vw-4rem)] max-w-[60rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.27)_0%,rgba(124,58,237,0.18)_34%,rgba(168,85,247,0.08)_58%,transparent_78%)] blur-[110px] sm:h-[42rem] sm:w-[calc(100vw-3rem)] sm:max-w-[70rem] lg:h-[54rem] lg:max-w-[82rem]"
+          style={{ willChange: 'transform, opacity' }}
         />
         <motion.div
           animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.2, 0.4, 0.2],
+            x: ['1%', '-2%', '1%'],
+            y: ['2%', '-1%', '2%'],
+            scale: [1.02, 0.98, 1.02],
+            opacity: [0.6, 0.72, 0.6],
           }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-primary/10 blur-3xl"
+          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute left-[42%] top-[32%] h-[26rem] w-[calc(100vw-5rem)] max-w-[48rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(124,58,237,0.24)_0%,rgba(139,92,246,0.12)_44%,transparent_74%)] blur-[130px] sm:h-[34rem] sm:w-[calc(100vw-4rem)] sm:max-w-[56rem] lg:h-[46rem] lg:max-w-[66rem]"
+          style={{ willChange: 'transform, opacity' }}
         />
+        <motion.div
+          animate={{
+            x: ['2%', '-1%', '2%'],
+            y: ['-1%', '2%', '-1%'],
+            scale: [0.98, 1.03, 0.98],
+            opacity: [0.48, 0.6, 0.48],
+          }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute left-[58%] top-[30%] h-[24rem] w-[calc(100vw-5.5rem)] max-w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.24)_0%,rgba(139,92,246,0.10)_46%,transparent_76%)] blur-[140px] sm:h-[32rem] sm:w-[calc(100vw-4rem)] sm:max-w-[50rem] lg:h-[42rem] lg:max-w-[58rem]"
+          style={{ willChange: 'transform, opacity' }}
+        />
+        {/* <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_36%,transparent_0%,rgba(2,6,23,0.03)_58%,rgba(2,6,23,0.08)_100%)]" /> */}
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-32 pb-20">

@@ -212,7 +212,7 @@ export function WebDevelopmentPage() {
           areaServed: 'Worldwide',
         }}
       />
-      <Navbar onContactSales={openContactSales} />
+      <Navbar onContactSales={openContactSales} compactLandingLayout />
 
       {/* Sticky CTA */}
       {isSticky && (

@@ -43,7 +43,7 @@ export function LandingPage() {
           serviceType: ['AI Automation', 'Voice AI', 'CRM Automation', 'Web Development'],
         }}
       />
-      <Navbar onContactSales={openContactSales} />
+      <Navbar onContactSales={openContactSales} compactLandingLayout />
       <main id="main-content">
         <Hero onContactSales={openContactSales} />
         <Stats />

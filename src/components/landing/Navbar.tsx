@@ -12,9 +12,10 @@ import { NAV_LINKS } from '@/lib/site'
 
 type NavbarProps = {
   onContactSales: (plan?: string) => void
+  compactLandingLayout?: boolean
 }
 
-export function Navbar({ onContactSales }: NavbarProps) {
+export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { setTheme } = useTheme()
   const navigate = useNavigate()
@@ -30,18 +31,29 @@ export function Navbar({ onContactSales }: NavbarProps) {
       )}
       role="banner"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div
+        className={cn(
+          'mx-auto max-w-7xl sm:px-6 lg:px-8',
+          compactLandingLayout ? 'px-3' : 'px-4'
+        )}
+      >
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <div className="flex min-w-0 items-center gap-2">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Sparkles className="h-5 w-5" />
             </div>
-            <span className="text-xl font-bold tracking-tight">
+            <span className="truncate text-xl font-bold tracking-tight">
               {COMPANY_INFO.name}
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
+          <nav
+            className={cn(
+              'hidden md:flex items-center',
+              compactLandingLayout ? 'gap-5 lg:gap-6' : 'gap-8'
+            )}
+            aria-label="Main navigation"
+          >
             {NAV_LINKS.map((link) => (
               <a
                 key={link.label}
@@ -50,14 +62,17 @@ export function Navbar({ onContactSales }: NavbarProps) {
                   e.preventDefault()
                   navigateToHref(navigate, link.href)
                 }}
-                className="rounded-md px-2 py-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className={cn(
+                  'rounded-md py-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  compactLandingLayout ? 'px-1.5 lg:px-2' : 'px-2'
+                )}
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex shrink-0 items-center gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative h-9 w-9">
@@ -87,10 +102,10 @@ export function Navbar({ onContactSales }: NavbarProps) {
             </Button>
           </div>
 
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1.5 pr-1 md:hidden">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative h-9 w-9">
+                <Button variant="ghost" size="icon" className="relative h-9 w-9 shrink-0">
                   <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                   <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                   <span className="sr-only">Toggle theme</span>
@@ -111,6 +126,7 @@ export function Navbar({ onContactSales }: NavbarProps) {
             <Button
               variant="ghost"
               size="icon"
+              className="shrink-0"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileOpen}
@@ -132,7 +148,7 @@ export function Navbar({ onContactSales }: NavbarProps) {
             role="navigation"
             aria-label="Mobile navigation"
           >
-            <div className="px-4 py-4 space-y-3">
+            <div className={cn('space-y-3 py-4', compactLandingLayout ? 'px-3' : 'px-4')}>
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.label}
