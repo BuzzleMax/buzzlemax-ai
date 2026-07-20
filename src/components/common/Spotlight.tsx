@@ -1,39 +1,15 @@
-import * as React from 'react'
 import { motion } from 'framer-motion'
 
 export interface SpotlightProps {
   className?: string
-  primaryColor?: string
-  secondaryColor?: string
-  accentColor?: string
-  primaryOpacity?: number
-  secondaryOpacity?: number
-  accentOpacity?: number
-  blur?: string
-  size?: string
   animationDuration?: number
-  type?: 'neutral' | 'purple' | 'custom'
+  type?: 'neutral' | 'purple'
 }
 
 export function Spotlight({
   className = '',
-  primaryColor = '#10B981',
-  secondaryColor = '#3B82F6',
-  accentColor = '#6366F1',
-  primaryOpacity = 0.15,
-  secondaryOpacity = 0.1,
-  accentOpacity = 0.08,
-  blur = 'blur-3xl',
-  size = 'h-96 w-96',
   animationDuration = 20,
-  type = 'neutral',
 }: SpotlightProps) {
-  const colors = {
-    neutral: { primary: '#10B981', secondary: '#3B82F6', accent: '#6366F1' },
-    purple: { primary: '#7C3AED', secondary: '#8B5CF6', accent: '#A855F7' },
-    custom: { primary: primaryColor, secondary: secondaryColor, accent: accentColor },
-  }[type]
-
   return (
     <div className={`absolute inset-0 -z-10 ${className}`}>
       <div className="absolute inset-0 bg-gradient-to-br from-[#1F2937]/5 via-background via-60% to-[#4B5563]/3" />
@@ -86,14 +62,6 @@ export function Spotlight({
 
 export function PurpleSpotlight({
   className = '',
-  primaryColor = '#7C3AED',
-  secondaryColor = '#8B5CF6',
-  accentColor = '#A855F7',
-  primaryOpacity = 0.25,
-  secondaryOpacity = 0.15,
-  accentOpacity = 0.1,
-  blur = 'blur-[100px]',
-  size = 'h-[40rem] w-[40rem]',
   animationDuration = 25,
 }: SpotlightProps) {
   return (
@@ -145,3 +113,4 @@ export function PurpleSpotlight({
     </div>
   )
 }
+
