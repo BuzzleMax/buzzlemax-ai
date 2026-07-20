@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Sparkles, Sun, Moon } from 'lucide-react'
+import { Menu, X, Sun, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useTheme } from '@/hooks/use-theme'
@@ -39,9 +39,14 @@ export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarP
       >
         <div className="flex h-16 items-center justify-between">
           <div className="flex min-w-0 items-center gap-2">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Sparkles className="h-5 w-5" />
-            </div>
+            <img 
+              src="/logo-36x36.png" 
+              alt="Buzzlemax AI Logo" 
+              className="h-8 w-8 shrink-0 rounded-lg md:h-9 md:w-9"
+              style={{ height: '32px', width: '32px' }}
+              sizes="(max-width: 768px) 32px, 36px"
+              srcSet="/logo-32x32.png 32w, /logo-36x36.png 36w"
+            />
             <span className="truncate text-xl font-bold tracking-tight">
               {COMPANY_INFO.name}
             </span>
