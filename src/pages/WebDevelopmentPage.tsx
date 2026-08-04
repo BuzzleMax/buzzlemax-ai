@@ -52,7 +52,7 @@ const services = [
   {
     icon: Layout,
     title: 'Landing Pages',
-    price: 'Starting at $100',
+    price: 'Starting at $300',
     description: 'High-converting landing pages designed to capture leads and drive action.',
     features: [
       'Custom design & copy',
