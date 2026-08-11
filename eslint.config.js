@@ -38,11 +38,14 @@ export default [
     ignores: [
       'dist',
       'node_modules',
+      'deploy.js',
       '*.config.js',
       '*.config.ts',
       'vite.config.*',
       'supabase/functions/**',
-      '.yoyo/**'
+      '.yoyo/**',
+      '**/*.d.ts',
+      'src/server/*.js'
     ],
   },
 ]

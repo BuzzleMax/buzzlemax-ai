@@ -34,6 +34,7 @@ import {
 import { normalizeWebsite } from '@/lib/navigation'
 import { contactSalesSchema, type ContactSalesSchema } from '@/lib/validation'
 import { sendContactSalesEmail } from '@/services/email'
+import { getPendingLeadData } from '@/services/chat-lead'
 
 interface ContactSalesModalProps {
   open: boolean
@@ -102,6 +103,15 @@ export function ContactSalesModal({ open, onOpenChange, selectedPlan }: ContactS
 
     setStatus('idle')
     setStatusMessage('')
+
+    const pending = getPendingLeadData()
+    if (pending) {
+      if (pending.name) form.setValue('name', pending.name)
+      if (pending.email) form.setValue('email', pending.email)
+      if (pending.company) form.setValue('company', pending.company)
+      if (pending.requirement) form.setValue('projectDetails', pending.requirement)
+    }
+
     if (selectedPlan) {
       form.setValue('selectedPlan', selectedPlan as ContactSalesSchema['selectedPlan'], {
         shouldDirty: true,

@@ -21,6 +21,8 @@ import { COMPANY_INFO } from '@/lib/constants'
 import { contactFormSchema, type ContactFormSchema } from '@/lib/validation'
 import { sendContactFormEmail } from '@/services/email'
 
+import { getPendingLeadData } from '@/services/chat-lead'
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -58,6 +60,24 @@ export function Contact() {
       message: '',
     },
   })
+
+  React.useEffect(() => {
+    const pending = getPendingLeadData()
+    if (pending) {
+      if (pending.name) {
+        const parts = pending.name.split(' ')
+        form.setValue('firstName', parts[0] || '')
+        if (parts.length > 1) {
+          form.setValue('lastName', parts.slice(1).join(' '))
+        }
+      }
+      if (pending.email) form.setValue('email', pending.email)
+      if (pending.requirement) {
+        form.setValue('subject', 'Project Inquiry from AI Chat Assistant')
+        form.setValue('message', pending.requirement)
+      }
+    }
+  }, [form])
 
   const messageLength = form.watch('message')?.length ?? 0
 
