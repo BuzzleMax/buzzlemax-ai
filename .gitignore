@@ -16,4 +16,6 @@ Thumbs.db
 .yoyo/
 
 # Environment
+.env
 .env.local
+.env.backup_local
