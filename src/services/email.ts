@@ -90,6 +90,7 @@ export type ContactFormData = {
   email: string
   subject: string
   message: string
+  service?: string
 }
 
 export async function sendContactFormEmail(data: ContactFormData): Promise<void> {

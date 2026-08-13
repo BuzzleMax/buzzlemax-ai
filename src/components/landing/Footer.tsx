@@ -1,4 +1,4 @@
-import { Sparkles, Mail, Github, Twitter, Linkedin, Instagram } from 'lucide-react'
+import { Mail, Github, Twitter, Linkedin, Instagram } from 'lucide-react'
 import { COMPANY_INFO } from '@/lib/constants'
 import { Separator } from '@/components/ui/separator'
 import { useNavigate } from 'react-router-dom'
@@ -22,9 +22,11 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
           <div className="col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Sparkles className="h-5 w-5" />
-              </div>
+              <img
+                src="/buzzlemax-logo.png"
+                alt="Buzzlemax AI Logo"
+                className="h-8 w-auto"
+              />
               <span className="text-xl font-bold tracking-tight">
                 {COMPANY_INFO.name}
               </span>

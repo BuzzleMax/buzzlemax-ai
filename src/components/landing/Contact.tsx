@@ -17,9 +17,16 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { COMPANY_INFO } from '@/lib/constants'
-import { contactFormSchema, type ContactFormSchema } from '@/lib/validation'
-import { sendContactFormEmail } from '@/services/email'
+import { contactFormSchema, type ContactFormSchema, CONTACT_SERVICE_OPTIONS } from '@/lib/validation'
+import { sendContactFormEmail, type ContactFormData } from '@/services/email'
 
 import { getPendingLeadData } from '@/services/chat-lead'
 
@@ -56,6 +63,7 @@ export function Contact() {
       firstName: '',
       lastName: '',
       email: '',
+      service: 'Other',
       subject: '',
       message: '',
     },
@@ -73,6 +81,7 @@ export function Contact() {
       }
       if (pending.email) form.setValue('email', pending.email)
       if (pending.requirement) {
+        form.setValue('service', 'Custom AI')
         form.setValue('subject', 'Project Inquiry from AI Chat Assistant')
         form.setValue('message', pending.requirement)
       }
@@ -84,7 +93,7 @@ export function Contact() {
   const setSchemaErrors = (values: ContactFormSchema) => {
     const result = contactFormSchema.safeParse(values)
 
-    if (result.success) return result.data
+    if (result.success) return result.data as ContactFormData
 
     result.error.issues.forEach((issue) => {
       const fieldName = issue.path[0]
@@ -155,7 +164,7 @@ export function Contact() {
             </span>
           </h2>
           <p className="section-description">
-            Have questions about AI automation or web development? Send your details and get a direct response from our team.
+            Whether you need one simple AI chatbot or a complete AI automation system, tell us what you need and we'll recommend the most practical solution. Custom AI solutions start from ₹5,000.
           </p>
         </motion.div>
 
@@ -177,7 +186,7 @@ export function Contact() {
                         Have a project in mind?
                       </h3>
                       <p className="max-w-md text-base leading-7 text-muted-foreground">
-                        Tell us what you are building, what is blocking growth, and where you need automation or development support.
+                        Tell us what you are building, what is blocking growth, and where you need custom AI, automation, or development support.
                       </p>
                     </div>
                   </div>
@@ -291,6 +300,31 @@ export function Contact() {
                             />
                           </FormControl>
                           <FormDescription>We reply directly to this address.</FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="service"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>What are you looking for?</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a service" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {CONTACT_SERVICE_OPTIONS.map((option) => (
+                                <SelectItem key={option} value={option}>
+                                  {option}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}

@@ -53,10 +53,22 @@ const websiteSchema = z
     }
   }, 'Enter a valid website URL')
 
+export const CONTACT_SERVICE_OPTIONS = [
+  'Website',
+  'Landing Page',
+  'AI Chatbot',
+  'Custom AI',
+  'AI Automation',
+  'Other',
+] as const
+
 export const contactFormSchema = z.object({
   firstName: z.string().trim().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().trim().min(2, 'Last name must be at least 2 characters'),
   email: z.string().trim().email('Please enter a valid email address'),
+  service: z.enum(CONTACT_SERVICE_OPTIONS as unknown as [string, ...string[]], {
+    message: 'Please select a service',
+  }),
   subject: z.string().trim().min(3, 'Subject must be at least 3 characters'),
   message: z
     .string()

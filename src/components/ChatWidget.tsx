@@ -5,7 +5,6 @@ import {
   Send,
   RotateCcw,
   Sparkles,
-  Bot,
   Loader2,
   CheckCircle2,
   ExternalLink,
@@ -24,6 +23,7 @@ export interface ChatMessageItem extends APIChatMessage {
   timestamp: string
   showLeadForm?: boolean
   leadSubmitted?: boolean
+  quickActions?: { label: string; prompt: string }[]
 }
 
 const INITIAL_QUICK_ACTIONS = [
@@ -113,6 +113,7 @@ export function ChatWidget() {
 
   const messagesEndRef = React.useRef<HTMLDivElement>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const isSubmittingRef = React.useRef(false)
 
   const scrollToBottom = React.useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -121,7 +122,10 @@ export function ChatWidget() {
   const handleSendMessage = React.useCallback(
     async (textToSend?: string) => {
       const text = (textToSend || inputValue).trim()
-      if (!text || isLoading) return
+      if (!text || isLoading || isSubmittingRef.current) return
+
+      // Prevent duplicate submissions
+      isSubmittingRef.current = true
 
       if (!hasStarted) {
         setHasStarted(true)
@@ -147,48 +151,55 @@ export function ChatWidget() {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       }
 
-      setMessages((prev) => {
-        const updated = [...prev, userMessage]
-
-        // Async API call inside callback context
-        const apiPayload: APIChatMessage[] = updated.map((m) => ({
-          role: m.role,
-          content: m.content,
-        }))
-
-        setIsLoading(true)
-        sendChatMessage(apiPayload)
-          .then((response) => {
-            const assistantMessage: ChatMessageItem = {
-              id: `ai-${Date.now()}`,
-              role: 'assistant',
-              content: response.message,
-              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              showLeadForm: response.leadCaptureRecommended,
-            }
-            setMessages((mPrev) => [...mPrev, assistantMessage])
-          })
-          .catch(() => {
-            const errorMessage: ChatMessageItem = {
-              id: `err-${Date.now()}`,
-              role: 'assistant',
-              content:
-                'Something went wrong on my side. You can still reach the BuzzleMax team through the contact form.',
-              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              showLeadForm: true,
-            }
-            setMessages((mPrev) => [...mPrev, errorMessage])
-          })
-          .finally(() => {
-            setIsLoading(false)
-          })
-
-        return updated
-      })
-
+      // Add user message immediately
+      setMessages((prev) => [...prev, userMessage])
       setInputValue('')
+      setIsLoading(true)
+
+      // Prepare API payload from updated messages (optimized to limit context)
+      const recentMessages = [...messages, userMessage].slice(-10) // Keep last 10 messages for context
+      const apiPayload: APIChatMessage[] = recentMessages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      }))
+
+      try {
+        const response = await sendChatMessage(apiPayload)
+        const assistantMessage: ChatMessageItem = {
+          id: `ai-${Date.now()}`,
+          role: 'assistant',
+          content: response.message,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          showLeadForm: response.leadCaptureRecommended,
+          quickActions: response.quickActions,
+        }
+        setMessages((prev) => [...prev, assistantMessage])
+      } catch (error) {
+        // This should rarely happen since the API client handles fallbacks
+        // But as a last resort, show a polished message
+        const errorMessage: ChatMessageItem = {
+          id: `err-${Date.now()}`,
+          role: 'assistant',
+          content: "I'd love to help with that. Tell the BuzzleMax team what you're looking to build and we'll help you figure out the right solution.",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          showLeadForm: true,
+          quickActions: [
+            { label: '🤖 Custom AI — from ₹5,000', prompt: 'I want a custom AI solution' },
+            { label: '🌐 Website', prompt: 'I need a website' },
+            { label: '💬 AI Chatbot', prompt: 'I need an AI chatbot' },
+            { label: '📱 WhatsApp AI', prompt: 'I need WhatsApp automation' },
+            { label: '📞 AI Voice', prompt: 'I need an AI voice assistant' },
+            { label: '💰 Pricing', prompt: 'What are your prices?' },
+            { label: '✉️ Contact BuzzleMax', prompt: 'I want to contact BuzzleMax' },
+          ]
+        }
+        setMessages((prev) => [...prev, errorMessage])
+      } finally {
+        setIsLoading(false)
+        isSubmittingRef.current = false
+      }
     },
-    [inputValue, isLoading, hasStarted]
+    [inputValue, isLoading, hasStarted, messages]
   )
 
   React.useEffect(() => {
@@ -330,7 +341,11 @@ export function ChatWidget() {
             <X className="h-6 w-6" />
           ) : (
             <>
-              <Bot className="h-7 w-7" />
+              <img
+                src="/buzzlemax-ai-icon.png"
+                alt="BuzzleMax AI"
+                className="h-7 w-7"
+              />
               <span className="absolute -top-1 -right-1 flex h-4 w-4">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-4 w-4 rounded-full bg-emerald-500" />
@@ -361,8 +376,12 @@ export function ChatWidget() {
             {/* Header */}
             <div className="flex shrink-0 items-center justify-between border-b border-border bg-muted/60 px-5 py-4 backdrop-blur-md">
               <div className="flex items-center gap-3">
-                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20">
-                  <Bot className="h-5 w-5" />
+                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20 overflow-hidden">
+                  <img
+                    src="/buzzlemax-ai-icon.png"
+                    alt="BuzzleMax AI"
+                    className="h-6 w-6"
+                  />
                   <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-card" />
                 </div>
                 <div>
@@ -412,10 +431,23 @@ export function ChatWidget() {
                     msg.role === 'user' ? 'items-end' : 'items-start'
                   )}
                 >
-                  <div className="flex items-end gap-2 max-w-[88%]">
+                  <div className={cn('flex items-end gap-2 max-w-[88%]', msg.role === 'user' && 'flex-row-reverse')}>
                     {msg.role === 'assistant' && (
-                      <div className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20">
-                        <Bot className="h-3.5 w-3.5" />
+                      <div className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20 overflow-hidden">
+                        <img
+                          src="/buzzlemax-ai-icon.png"
+                          alt="BuzzleMax AI"
+                          className="h-4 w-4"
+                        />
+                      </div>
+                    )}
+                    {msg.role === 'user' && (
+                      <div className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground overflow-hidden">
+                        <img
+                          src="/buzzlemax-logo.png"
+                          alt="User"
+                          className="h-4 w-4"
+                        />
                       </div>
                     )}
 
@@ -517,8 +549,12 @@ export function ChatWidget() {
               {/* Typing Indicator */}
               {isLoading && (
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20">
-                    <Bot className="h-3.5 w-3.5" />
+                  <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20 overflow-hidden">
+                    <img
+                      src="/buzzlemax-ai-icon.png"
+                      alt="BuzzleMax AI"
+                      className="h-4 w-4"
+                    />
                   </div>
                   <div className="flex items-center gap-1.5 rounded-2xl bg-muted px-4 py-2.5 text-xs">
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-primary" />
@@ -534,8 +570,11 @@ export function ChatWidget() {
             {/* Quick Actions Chips */}
             <div className="border-t border-border bg-muted/30 px-3 py-2 shrink-0">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-                {!hasStarted
-                  ? INITIAL_QUICK_ACTIONS.map((action) => (
+                {/* Use dynamic quick actions from last assistant message if available */}
+                {(() => {
+                  const lastAssistantMessage = [...messages].reverse().find(m => m.role === 'assistant' && m.quickActions)
+                  if (lastAssistantMessage && lastAssistantMessage.quickActions && lastAssistantMessage.quickActions.length > 0) {
+                    return lastAssistantMessage.quickActions.map((action) => (
                       <button
                         key={action.label}
                         onClick={() => handleSendMessage(action.prompt)}
@@ -544,15 +583,28 @@ export function ChatWidget() {
                         {action.label}
                       </button>
                     ))
-                  : CONTEXTUAL_QUICK_ACTIONS.map((action) => (
-                      <button
-                        key={action.label}
-                        onClick={() => handleSendMessage(action.prompt)}
-                        className="shrink-0 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/40 transition-colors"
-                      >
-                        {action.label}
-                      </button>
-                    ))}
+                  }
+                  // Fallback to default quick actions
+                  return !hasStarted
+                    ? INITIAL_QUICK_ACTIONS.map((action) => (
+                        <button
+                          key={action.label}
+                          onClick={() => handleSendMessage(action.prompt)}
+                          className="shrink-0 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/40 transition-colors"
+                        >
+                          {action.label}
+                        </button>
+                      ))
+                    : CONTEXTUAL_QUICK_ACTIONS.map((action) => (
+                        <button
+                          key={action.label}
+                          onClick={() => handleSendMessage(action.prompt)}
+                          className="shrink-0 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/40 transition-colors"
+                        >
+                          {action.label}
+                        </button>
+                      ))
+                })()}
               </div>
             </div>
 
@@ -580,6 +632,12 @@ export function ChatWidget() {
                   disabled={isLoading || !inputValue.trim()}
                   className="h-10 w-10 shrink-0 rounded-xl font-semibold shadow-md"
                   aria-label="Send message"
+                  onClick={(e) => {
+                    // Prevent double submission
+                    if (isLoading) {
+                      e.preventDefault()
+                    }
+                  }}
                 >
                   <Send className="h-4 w-4" />
                 </Button>

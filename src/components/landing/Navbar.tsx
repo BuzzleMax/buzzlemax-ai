@@ -1,20 +1,182 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Sun, Moon } from 'lucide-react'
+import { Menu, X, Sun, Moon, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useTheme } from '@/hooks/use-theme'
 import { cn } from '@/lib/utils'
 import { COMPANY_INFO } from '@/lib/constants'
 import { navigateToHref } from '@/lib/navigation'
-import { NAV_LINKS } from '@/lib/site'
 
 type NavbarProps = {
   onContactSales: (plan?: string) => void
   compactLandingLayout?: boolean
 }
 
+// ─── Desktop nav group definitions ───────────────────────────────────────────
+const SERVICES_LINKS = [
+  { label: 'Web Development', href: '/web-development' },
+  { label: 'AI Development',  href: '/#solutions' },
+]
+
+const PLATFORM_LINKS = [
+  { label: 'Features',     href: '/#features' },
+  { label: 'Solutions',    href: '/#solutions' },
+  { label: 'How It Works', href: '/#how-it-works' },
+]
+
+const RESOURCES_LINKS = [
+  { label: 'Pricing',  href: '/#pricing' },
+  { label: 'FAQ',      href: '/#faq' },
+  { label: 'Contact',  href: '/#contact' },
+]
+
+// ─── Reusable hover dropdown component ───────────────────────────────────────
+function NavDropdown({
+  label,
+  links,
+  navigate,
+  onNavigate,
+}: {
+  label: string
+  links: { label: string; href: string }[]
+  navigate: ReturnType<typeof useNavigate>
+  onNavigate?: () => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    setOpen(true)
+  }
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => setOpen(false), 120)
+  }
+
+  // Close on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    if (open) document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [open])
+
+  return (
+    <div
+      ref={ref}
+      className="relative"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <button
+        className="flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-haspopup="true"
+      >
+        {label}
+        <ChevronDown
+          className={cn(
+            'h-3.5 w-3.5 transition-transform duration-200',
+            open && 'rotate-180'
+          )}
+        />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
+            className="absolute top-full left-0 z-50 mt-1 min-w-[180px] rounded-lg border border-border/60 bg-background/95 py-1.5 shadow-lg backdrop-blur-xl"
+            role="menu"
+          >
+            {links.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                role="menuitem"
+                className="block px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:bg-accent focus-visible:outline-none"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setOpen(false)
+                  navigateToHref(navigate, link.href, onNavigate)
+                }}
+              >
+                {link.label}
+              </a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+// ─── Mobile expandable section ────────────────────────────────────────────────
+function MobileNavSection({
+  label,
+  links,
+  navigate,
+  onNavigate,
+}: {
+  label: string
+  links: { label: string; href: string }[]
+  navigate: ReturnType<typeof useNavigate>
+  onNavigate?: () => void
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div>
+      <button
+        className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+      >
+        {label}
+        <ChevronDown
+          className={cn('h-3.5 w-3.5 transition-transform duration-200', open && 'rotate-180')}
+        />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="overflow-hidden pl-3"
+          >
+            {links.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={(e) => {
+                  e.preventDefault()
+                  navigateToHref(navigate, link.href, onNavigate)
+                }}
+              >
+                {link.label}
+              </a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+// ─── Main Navbar ──────────────────────────────────────────────────────────────
 export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { setTheme } = useTheme()
@@ -38,46 +200,35 @@ export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarP
         )}
       >
         <div className="flex h-16 items-center justify-between">
+          {/* Logo */}
           <div className="flex min-w-0 items-center gap-2">
-            <img 
-              src="/logo-36x36.png" 
-              alt="Buzzlemax AI Logo" 
-              className="h-8 w-8 shrink-0 rounded-lg md:h-9 md:w-9"
-              style={{ height: '32px', width: '32px' }}
-              sizes="(max-width: 768px) 32px, 36px"
-              srcSet="/logo-32x32.png 32w, /logo-36x36.png 36w"
+            <img
+              src="/buzzlemax-logo.png"
+              alt="Buzzlemax AI Logo"
+              className="h-8 w-auto shrink-0 md:h-9"
+              style={{ height: '32px', width: 'auto' }}
             />
             <span className="truncate text-xl font-bold tracking-tight">
               {COMPANY_INFO.name}
             </span>
           </div>
 
+          {/* Desktop nav — grouped dropdowns */}
           <nav
             className={cn(
               'hidden md:flex items-center',
-              compactLandingLayout ? 'gap-5 lg:gap-6' : 'gap-8'
+              compactLandingLayout ? 'gap-1 lg:gap-2' : 'gap-2'
             )}
             aria-label="Main navigation"
           >
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => {
-                  e.preventDefault()
-                  navigateToHref(navigate, link.href)
-                }}
-                className={cn(
-                  'rounded-md py-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  compactLandingLayout ? 'px-1.5 lg:px-2' : 'px-2'
-                )}
-              >
-                {link.label}
-              </a>
-            ))}
+            <NavDropdown label="Services"  links={SERVICES_LINKS}  navigate={navigate} />
+            <NavDropdown label="Platform"  links={PLATFORM_LINKS}  navigate={navigate} />
+            <NavDropdown label="Resources" links={RESOURCES_LINKS} navigate={navigate} />
           </nav>
 
+          {/* Desktop right-hand actions */}
           <div className="hidden md:flex shrink-0 items-center gap-3">
+            {/* Theme toggle — strictly tied to existing useTheme hook */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative h-9 w-9">
@@ -87,26 +238,19 @@ export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarP
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme('light')}>
-                  Light
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('dark')}>
-                  Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('system')}>
-                  System
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('system')}>System</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button variant="outline" size="sm" onClick={() => navigateToHref(navigate, '/#pricing')}>
-              View Pricing
-            </Button>
+            {/* Primary CTA */}
             <Button size="sm" onClick={() => onContactSales()} className="font-semibold">
               Book Strategy Call
             </Button>
           </div>
 
+          {/* Mobile: theme toggle + hamburger */}
           <div className="flex shrink-0 items-center gap-1.5 pr-1 md:hidden">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -117,15 +261,9 @@ export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarP
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme('light')}>
-                  Light
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('dark')}>
-                  Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('system')}>
-                  System
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('system')}>System</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Button
@@ -142,6 +280,7 @@ export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarP
         </div>
       </div>
 
+      {/* Mobile drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -153,28 +292,27 @@ export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarP
             role="navigation"
             aria-label="Mobile navigation"
           >
-            <div className={cn('space-y-3 py-4', compactLandingLayout ? 'px-3' : 'px-4')}>
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    navigateToHref(navigate, link.href, () => setMobileOpen(false))
-                  }}
-                  className="block rounded-md px-2 py-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                >
-                  {link.label}
-                </a>
-              ))}
-              <div className="flex flex-col gap-2 pt-2">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => navigateToHref(navigate, '/#pricing', () => setMobileOpen(false))}
-                >
-                  View Pricing
-                </Button>
+            <div className={cn('space-y-1 py-4', compactLandingLayout ? 'px-3' : 'px-4')}>
+              <MobileNavSection
+                label="Services"
+                links={SERVICES_LINKS}
+                navigate={navigate}
+                onNavigate={() => setMobileOpen(false)}
+              />
+              <MobileNavSection
+                label="Platform"
+                links={PLATFORM_LINKS}
+                navigate={navigate}
+                onNavigate={() => setMobileOpen(false)}
+              />
+              <MobileNavSection
+                label="Resources"
+                links={RESOURCES_LINKS}
+                navigate={navigate}
+                onNavigate={() => setMobileOpen(false)}
+              />
+
+              <div className="flex flex-col gap-2 pt-3">
                 <Button
                   className="w-full"
                   onClick={() => {

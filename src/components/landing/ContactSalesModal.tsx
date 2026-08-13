@@ -33,7 +33,7 @@ import {
 } from '@/lib/site'
 import { normalizeWebsite } from '@/lib/navigation'
 import { contactSalesSchema, type ContactSalesSchema } from '@/lib/validation'
-import { sendContactSalesEmail } from '@/services/email'
+import { sendContactSalesEmail, type ContactSalesFormData } from '@/services/email'
 import { getPendingLeadData } from '@/services/chat-lead'
 
 interface ContactSalesModalProps {
@@ -57,7 +57,7 @@ export function ContactSalesModal({ open, onOpenChange, selectedPlan }: ContactS
       businessType: undefined,
       interestedService: undefined,
       selectedPlan: (selectedPlan as ContactSalesSchema['selectedPlan']) ?? undefined,
-      monthlyRevenue: null,
+      monthlyRevenue: undefined,
       projectDetails: '',
     },
   })
@@ -75,8 +75,8 @@ export function ContactSalesModal({ open, onOpenChange, selectedPlan }: ContactS
     if (result.success) {
       return {
         ...result.data,
-        website: normalizeWebsite(result.data.website),
-      }
+        website: normalizeWebsite(result.data.website || ''),
+      } as ContactSalesFormData
     }
 
     result.error.issues.forEach((issue) => {
@@ -164,7 +164,7 @@ export function ContactSalesModal({ open, onOpenChange, selectedPlan }: ContactS
         businessType: undefined,
         interestedService: undefined,
         selectedPlan: (selectedPlan as ContactSalesSchema['selectedPlan']) ?? undefined,
-        monthlyRevenue: null,
+        monthlyRevenue: undefined,
         projectDetails: '',
       })
 
@@ -328,7 +328,7 @@ export function ContactSalesModal({ open, onOpenChange, selectedPlan }: ContactS
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {BUSINESS_TYPE_OPTIONS.map((option) => (
+                          {BUSINESS_TYPE_OPTIONS.map((option: string) => (
                             <SelectItem key={option} value={option}>
                               {option}
                             </SelectItem>

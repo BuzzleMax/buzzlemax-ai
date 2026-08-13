@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Play, Bot, BarChart3, Zap } from 'lucide-react'
+import { Bot, BarChart3, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { COMPANY_INFO } from '@/lib/constants'
 import { cn } from '@/lib/utils'
@@ -23,9 +23,9 @@ const itemVariants = {
 }
 
 const featureCards = [
-  { title: 'AI Chatbots', description: 'Instant support & lead qualification', icon: Bot },
-  { title: 'AI Voice Agents', description: 'Calls converted into booked appointments', icon: BarChart3 },
-  { title: 'CRM Automation', description: 'Pipeline updates + follow-ups—automatically', icon: Zap },
+  { title: 'Website Chatbots', description: 'Starting from ₹5,000', icon: Bot },
+  { title: 'WhatsApp & Instagram AI', description: 'Starting from ₹5,000', icon: BarChart3 },
+  { title: 'Voice AI Agents', description: 'Starting from ₹5,000', icon: Zap },
 ]
 
 
@@ -110,35 +110,48 @@ export function Hero({ onContactSales }: HeroProps) {
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
             id="hero-heading"
           >
-            <span className="block text-foreground">Transform Your</span>
+            <span className="block text-foreground">Custom AI, Built Around</span>
             <span className="block bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-              Business with AI
+              What You Actually Need
             </span>
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
+            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-4 leading-relaxed"
           >
-            {COMPANY_INFO.description}
+            From website chatbots to WhatsApp, Instagram, voice and custom AI assistants — BuzzleMax builds the specific AI you need, starting from ₹5,000. No need to pay for a massive AI suite when one focused solution will do the job.
+          </motion.p>
+
+          <motion.p
+            variants={itemVariants}
+            className="text-sm text-muted-foreground/60 max-w-2xl mx-auto mb-6 leading-relaxed"
+          >
+            Don't pay for expensive AI subscriptions packed with features you don't need. We build custom AI solutions around exactly what your business needs — so you only pay for what you actually need.
+          </motion.p>
+
+          <motion.p
+            variants={itemVariants}
+            className="text-xs text-muted-foreground/40 max-w-2xl mx-auto mb-10 leading-relaxed"
+          >
+            Built in India 🇮🇳. Built for businesses everywhere.
           </motion.p>
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               size="lg"
               className="w-full sm:w-auto text-base px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-shadow"
-              onClick={() => onContactSales()}
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              Schedule Consultation
+              Build My AI
             </Button>
             <Button 
               variant="outline" 
               size="lg" 
               className="w-full sm:w-auto text-base px-8 py-3 gap-2 font-medium"
-              onClick={() => document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => onContactSales()}
             >
-              <Play className="h-4 w-4 fill-current" />
-              Watch Demo
+              Schedule Consultation
             </Button>
           </motion.div>
         </motion.div>
@@ -174,7 +187,7 @@ export function Hero({ onContactSales }: HeroProps) {
                   </div>
                 </div>
                 <div className="flex items-end justify-between">
-                  <span className="text-xs text-muted-foreground font-medium">AI Powered</span>
+                  <span className="text-xs text-primary font-medium">Starting from ₹5,000</span>
                 </div>
               </motion.div>
             )

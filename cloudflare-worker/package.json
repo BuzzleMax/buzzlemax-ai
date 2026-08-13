@@ -1,0 +1,16 @@
+{
+  "name": "buzzlemax-ai-worker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "secret": "wrangler secret put GEMINI_API_KEY",
+    "secret:nvidia": "wrangler secret put NVIDIA_API_KEY"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240208.0",
+    "typescript": "^5.4.5",
+    "wrangler": "^3.114.17"
+  }
+}

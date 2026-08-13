@@ -1,0 +1,15 @@
+import { type ClassValue } from 'clsx';
+export declare function cn(...inputs: ClassValue[]): string;
+export declare function formatCurrency(amount: number, currency?: string): string;
+export declare function formatNumber(num: number): string;
+export declare function formatDate(date: string | Date, options?: Intl.DateTimeFormatOptions): string;
+export declare function formatRelativeTime(date: string | Date): string;
+export declare function slugify(text: string): string;
+export declare function generateId(length?: number): string;
+export declare function capitalizeFirst(str: string): string;
+export declare function truncate(str: string, length?: number): string;
+export declare function debounce<T extends (...args: unknown[]) => void>(fn: T, delay: number): (...args: Parameters<T>) => void;
+export declare function throttle<T extends (...args: unknown[]) => void>(fn: T, delay: number): (...args: Parameters<T>) => void;
+export declare function getInitials(name: string): string;
+export declare function isValidEmail(email: string): boolean;
+export declare function sleep(ms: number): Promise<unknown>;

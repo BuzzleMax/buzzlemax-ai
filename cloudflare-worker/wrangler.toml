@@ -1,0 +1,17 @@
+name = "buzzlemax-ai-worker"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ─── IMPORTANT ───────────────────────────────────────────────────────────────
+# Do NOT add GEMINI_API_KEY or NVIDIA_API_KEY here.
+# Store them as secrets using:
+#   npx wrangler secret put GEMINI_API_KEY
+#   npx wrangler secret put NVIDIA_API_KEY
+# This encrypts them in Cloudflare's vault — they will NEVER appear in this file,
+# in git, or in any deployed bundle.
+# ─────────────────────────────────────────────────────────────────────────────
+
+[vars]
+# Optional: override the allowed CORS origin (defaults to https://buzzlemax.site in the Worker code)
+# ALLOWED_ORIGIN = "https://buzzlemax.site"

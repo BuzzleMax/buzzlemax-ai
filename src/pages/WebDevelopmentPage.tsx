@@ -52,7 +52,7 @@ const services = [
   {
     icon: Layout,
     title: 'Landing Pages',
-    price: 'Starting at $100',
+    price: 'Starting at $300 (25,000 Rupees)',
     description: 'High-converting landing pages designed to capture leads and drive action.',
     features: [
       'Custom design & copy',
@@ -67,7 +67,7 @@ const services = [
   {
     icon: Globe,
     title: 'Business Websites',
-    price: 'Starting at $1000',
+    price: 'Starting at $1,000 (90,000 Rupees)',
     description: 'Professional multi-page websites that establish your brand and convert visitors.',
     features: [
       '5-10 custom pages',
@@ -82,7 +82,7 @@ const services = [
   {
     icon: ShoppingCart,
     title: 'E-commerce Stores',
-    price: 'Starting at $5,000',
+    price: 'Starting at $5,000 (4.5 Lakhs)',
     description: 'Complete online stores with payment processing and inventory management.',
     features: [
       'Product catalog',
@@ -96,8 +96,8 @@ const services = [
   },
   {
     icon: Code2,
-    title: 'Custom Web Applications',
-    price: 'Custom Quote',
+    title: 'Custom Web Applications & SaaS Interfaces',
+    price: 'Custom Quote based on scope',
     description: 'Bespoke web applications built for your specific business requirements.',
     features: [
       'Custom architecture',

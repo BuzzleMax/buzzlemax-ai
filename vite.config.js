@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { processChatRequest } from './src/server/sales-engine';
@@ -90,24 +90,31 @@ function buzzlemaxChatApiPlugin() {
         },
     };
 }
-export default defineConfig({
-    base: '/',
-    plugins: [react(), buzzlemaxChatApiPlugin()],
-    resolve: {
-        alias: {
-            '@': path.resolve(__dirname, './src'),
-            '@/components': path.resolve(__dirname, './src/components'),
-            '@/features': path.resolve(__dirname, './src/features'),
-            '@/hooks': path.resolve(__dirname, './src/hooks'),
-            '@/pages': path.resolve(__dirname, './src/pages'),
-            '@/services': path.resolve(__dirname, './src/services'),
-            '@/types': path.resolve(__dirname, './src/types'),
-            '@/lib': path.resolve(__dirname, './src/lib'),
-            '@/utils': path.resolve(__dirname, './src/utils'),
+export default defineConfig(function (_a) {
+    var mode = _a.mode;
+    var env = loadEnv(mode, process.cwd(), '');
+    // Securely propagate keys to process.env during local dev server execution
+    process.env.GEMINI_API_KEY = env.GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+    process.env.OPENAI_API_KEY = env.OPENAI_API_KEY || process.env.OPENAI_API_KEY;
+    return {
+        base: '/',
+        plugins: [react(), buzzlemaxChatApiPlugin()],
+        resolve: {
+            alias: {
+                '@': path.resolve(__dirname, './src'),
+                '@/components': path.resolve(__dirname, './src/components'),
+                '@/features': path.resolve(__dirname, './src/features'),
+                '@/hooks': path.resolve(__dirname, './src/hooks'),
+                '@/pages': path.resolve(__dirname, './src/pages'),
+                '@/services': path.resolve(__dirname, './src/services'),
+                '@/types': path.resolve(__dirname, './src/types'),
+                '@/lib': path.resolve(__dirname, './src/lib'),
+                '@/utils': path.resolve(__dirname, './src/utils'),
+            },
         },
-    },
-    server: {
-        port: 3000,
-        open: true,
-    },
+        server: {
+            port: 3000,
+            open: true,
+        },
+    };
 });

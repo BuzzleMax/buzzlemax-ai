@@ -51,11 +51,73 @@ export function Pricing({ onContactSales }: PricingProps) {
             Pricing
           </span>
           <h2 id="pricing-heading" className="section-title text-white">
-            Premium AI Automation
+            Custom AI Solutions from ₹5,000
           </h2>
           <p className="section-description text-gray-400">
-            Custom-built solutions for measurable ROI, increased conversions, and scalable growth.
+            Don't pay for an expensive AI suite when you only need one solution. We build the specific AI assistant or automation your business needs — from website chatbots to WhatsApp, Instagram, voice and custom AI systems.
           </p>
+        </motion.div>
+
+        {/* Entry-Level Custom AI Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-16"
+        >
+          <Card className="relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-xl">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20 opacity-50" />
+            <CardContent className="relative p-8 md:p-12">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div className="flex-1 text-center md:text-left">
+                  <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary mb-4">
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Entry-Level Custom AI
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                    Custom AI Solutions Start from ₹5,000
+                  </h3>
+                  <p className="text-gray-300 text-sm md:text-base max-w-xl leading-relaxed">
+                    Get a focused AI solution built around your exact needs — whether it's a website chatbot, FAQ assistant, lead-capture AI, or simple automation. Pay only for what you actually need.
+                  </p>
+                </div>
+                <div className="flex flex-col items-center gap-4">
+                  <div className="text-center">
+                    <div className="text-5xl md:text-6xl font-bold text-white mb-1">₹5,000</div>
+                    <div className="text-sm text-gray-400">Starting Price</div>
+                  </div>
+                  <Button
+                    size="lg"
+                    className="bg-white text-black hover:bg-white/90 font-semibold px-8 py-3 shadow-lg hover:shadow-xl transition-all"
+                    onClick={() => onContactSales('custom-ai')}
+                  >
+                    Tell Us What You Need
+                  </Button>
+                </div>
+              </div>
+              <div className="mt-8 pt-6 border-t border-white/10">
+                <p className="text-xs text-gray-400 text-center">
+                  *Starting price for one simple/custom AI solution. More complex systems with integrations, multiple platforms, or advanced workflows may cost more.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mb-8"
+        >
+          <div className="text-center mb-8">
+            <h3 className="text-xl font-semibold text-white mb-2">Advanced Multi-Platform Solutions</h3>
+            <p className="text-sm text-gray-400">
+              Comprehensive AI automation packages for businesses requiring multiple platforms, advanced integrations, or enterprise-scale systems.
+            </p>
+          </div>
         </motion.div>
 
         <motion.div
@@ -107,13 +169,20 @@ export function Pricing({ onContactSales }: PricingProps) {
                     <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">
                       {plan.isEnterprise ? 'Setup' : 'One-Time Setup'}
                     </p>
-                    <div className="flex items-baseline justify-center gap-1">
-                      {plan.isEnterprise && (
-                        <span className="text-sm text-gray-400 mr-1">Starting at</span>
+                    <div className="flex flex-col items-center justify-center gap-1">
+                      <div className="flex items-baseline justify-center gap-1">
+                        {plan.isEnterprise && (
+                          <span className="text-sm text-gray-400 mr-1">Starting at</span>
+                        )}
+                        <span className="text-4xl font-bold text-white tracking-tight">
+                          ${plan.setupFee.toLocaleString()}
+                        </span>
+                      </div>
+                      {plan.setupFeeRupees && (
+                        <span className="text-xs text-gray-400 font-medium">
+                          ({plan.setupFeeRupees})
+                        </span>
                       )}
-                      <span className="text-4xl font-bold text-white tracking-tight">
-                        ${plan.setupFee.toLocaleString()}
-                      </span>
                     </div>
                   </div>
 
@@ -122,18 +191,25 @@ export function Pricing({ onContactSales }: PricingProps) {
                     <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">
                       Monthly
                     </p>
-                    <div className="flex items-baseline justify-center gap-1">
-                      {plan.isEnterprise ? (
-                        <span className="text-2xl font-bold text-white tracking-tight">
-                          Custom Retainer
-                        </span>
-                      ) : (
-                        <>
-                          <span className="text-4xl font-bold text-white tracking-tight">
-                            ${plan.price.toLocaleString()}
+                    <div className="flex flex-col items-center justify-center gap-1">
+                      <div className="flex items-baseline justify-center gap-1">
+                        {plan.isEnterprise ? (
+                          <span className="text-2xl font-bold text-white tracking-tight">
+                            Custom Retainer
                           </span>
-                          <span className="text-gray-400">/month</span>
-                        </>
+                        ) : (
+                          <>
+                            <span className="text-4xl font-bold text-white tracking-tight">
+                              ${plan.price.toLocaleString()}
+                            </span>
+                            <span className="text-gray-400">/month</span>
+                          </>
+                        )}
+                      </div>
+                      {!plan.isEnterprise && plan.priceRupees && (
+                        <span className="text-xs text-gray-400 font-medium">
+                          ({plan.priceRupees})
+                        </span>
                       )}
                     </div>
                   </div>
@@ -142,7 +218,7 @@ export function Pricing({ onContactSales }: PricingProps) {
                   <ul className="space-y-4 mb-8">
                     {plan.features.map((feature, index) => (
                       <li 
-                        key={`${feature}-${index}`} 
+                       key={`${feature}-${index}`} 
                         className="flex items-start gap-3"
                       >
                         <Check className="h-5 w-5 text-white/80 shrink-0 mt-0.5" />
@@ -186,12 +262,49 @@ export function Pricing({ onContactSales }: PricingProps) {
           ))}
         </motion.div>
 
+        {/* Custom AI Development Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="max-w-4xl mx-auto mb-12"
+        >
+          <Card className="backdrop-blur-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02]">
+            <CardContent className="p-8 sm:p-10">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                  Need Something More Specific?
+                </h3>
+                <p className="text-base text-gray-300 leading-relaxed mb-6">
+                  Don't pay for expensive AI subscriptions packed with features you don't need. We build custom AI solutions around exactly what your business needs — so you only pay for what you actually need.
+                </p>
+                <p className="text-sm text-gray-400 leading-relaxed">
+                  From AI chatbots and lead qualification to knowledge assistants, customer support systems, automation workflows, and AI tools integrated into your existing systems, we can build around your specific requirements.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button
+                  size="lg"
+                  className="w-full sm:w-auto text-base px-8 py-3 font-semibold bg-white text-black hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
+                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Talk About Your AI
+                </Button>
+              </div>
+              <p className="text-center text-xs text-gray-500 mt-6">
+                Custom pricing based on your requirements.
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+
         {/* Web Development Cross-link */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
           className="max-w-2xl mx-auto text-center mb-12"
         >
           <p className="text-sm text-gray-400 mb-3">
@@ -208,7 +321,7 @@ export function Pricing({ onContactSales }: PricingProps) {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
           className="max-w-3xl mx-auto text-center mb-12"
         >
           <p className="text-lg text-gray-300 leading-relaxed mb-8">
@@ -221,7 +334,7 @@ export function Pricing({ onContactSales }: PricingProps) {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
           className="max-w-3xl mx-auto text-center mb-12"
         >
           <p className="text-sm text-gray-400 leading-relaxed">
@@ -234,7 +347,7 @@ export function Pricing({ onContactSales }: PricingProps) {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
           className="max-w-2xl mx-auto"
         >
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl px-8 py-6">
