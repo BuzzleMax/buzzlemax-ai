@@ -11,39 +11,18 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<ThemeMode>(() => {
-    return (localStorage.getItem('buzzlemax-theme') as ThemeMode) || 'system'
-  })
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light')
+  const [theme] = useState<ThemeMode>('dark')
+  const resolvedTheme: 'light' | 'dark' = 'dark'
 
   useEffect(() => {
     const root = window.document.documentElement
+    root.classList.remove('light')
+    root.classList.add('dark')
+  }, [])
 
-    const updateTheme = () => {
-      const isDark =
-        theme === 'system'
-          ? window.matchMedia('(prefers-color-scheme: dark)').matches
-          : theme === 'dark'
-
-      setResolvedTheme(isDark ? 'dark' : 'light')
-      root.classList.remove('light', 'dark')
-      root.classList.add(isDark ? 'dark' : 'light')
-    }
-
-    updateTheme()
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    const handleChange = () => {
-      if (theme === 'system') updateTheme()
-    }
-    mediaQuery.addEventListener('change', handleChange)
-
-    return () => mediaQuery.removeEventListener('change', handleChange)
-  }, [theme])
-
-  useEffect(() => {
-    localStorage.setItem('buzzlemax-theme', theme)
-  }, [theme])
+  const setTheme = () => {
+    // Disabled theme switching behavior. The website permanently remains in dark mode.
+  }
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme } as ThemeContextValue}>

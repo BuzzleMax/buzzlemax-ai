@@ -1,21 +1,29 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // BuzzleMax AI Chat — Cloudflare Worker
 //
-// SECURITY: The GEMINI_API_KEY and NVIDIA_API_KEY are stored as Cloudflare Worker Secrets.
+// SECURITY: API keys are stored as Cloudflare Worker Secrets.
 // They are NEVER present in this source file, NEVER committed to git, and
 // NEVER sent to the browser.
+//
+// Provider order:
+//   1. Gemini  (primary)
+//   2. NVIDIA  (first fallback)
+//   3. Groq    (emergency fallback)
+//   4. Friendly unavailable response
 //
 // To deploy:
 //   1. npm install (inside cloudflare-worker/)
 //   2. npx wrangler secret put GEMINI_API_KEY   ← paste key when prompted
-//   3. npx wrangler secret put NVIDIA_API_KEY  ← paste key when prompted (optional fallback)
-//   4. npx wrangler deploy
+//   3. npx wrangler secret put NVIDIA_API_KEY   ← paste key when prompted
+//   4. npx wrangler secret put GROQ_API_KEY     ← paste key when prompted
+//   5. npx wrangler deploy
 //
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface Env {
   GEMINI_API_KEY: string       // Injected at runtime from Cloudflare Secrets
-  NVIDIA_API_KEY?: string      // Optional fallback provider
+  NVIDIA_API_KEY?: string      // Optional first fallback provider
+  GROQ_API_KEY?: string        // Optional emergency fallback provider
   ALLOWED_ORIGIN?: string      // Optional override (defaults to buzzlemax.site)
 }
 
@@ -28,11 +36,6 @@ interface WorkerRequest {
   messages: ChatMessage[]
 }
 
-interface WorkerResponse {
-  message: string
-  leadCaptureRecommended: boolean
-  error?: string
-}
 
 // ─── BuzzleMax Sales System Prompt ───────────────────────────────────────────
 const SYSTEM_PROMPT = `
@@ -161,6 +164,22 @@ function corsHeaders(allowedOrigin: string): Record<string, string> {
   }
 }
 
+// ─── Helper: is this a retryable (provider-side) error? ──────────────────────
+// Returns true for errors we should advance past (rate limits, server errors,
+// timeouts). Returns false for client-side errors that won't be fixed by trying
+// another provider with the same input.
+function isRetryableError(error: unknown): boolean {
+  if (!(error instanceof Error)) return true
+  const msg = error.message
+  if (msg === 'RATE_LIMIT_EXCEEDED') return true
+  if (msg.startsWith('SERVER_ERROR_')) return true
+  if (msg === 'TIMEOUT') return true
+  if (msg === 'EMPTY_RESPONSE') return true
+  if (msg === 'UNKNOWN_ERROR') return true
+  // Client-side errors (e.g. invalid key format, bad request) → do NOT advance
+  return false
+}
+
 // ─── Gemini API call ──────────────────────────────────────────────────────────
 async function callGemini(apiKey: string, messages: ChatMessage[]): Promise<string> {
   const modelName = 'gemini-flash-latest'
@@ -209,18 +228,15 @@ async function callGemini(apiKey: string, messages: ChatMessage[]): Promise<stri
     clearTimeout(timeoutId)
 
     if (!res.ok) {
-      const errText = await res.text()
-      console.error('[AI ERROR] Gemini API error:', res.status, errText)
-      
-      // Categorize errors for better handling
+      // Log status code only — never log response body which may contain key details
+      console.error('[AI ERROR] Gemini API error:', res.status)
+
       if (res.status === 429) {
         throw new Error('RATE_LIMIT_EXCEEDED')
       } else if (res.status >= 500) {
         throw new Error(`SERVER_ERROR_${res.status}`)
-      } else if (res.status === 429) {
-        throw new Error('RATE_LIMIT_EXCEEDED')
       } else {
-        throw new Error(`Gemini API error ${res.status}: ${errText}`)
+        throw new Error(`Gemini API client error ${res.status}`)
       }
     }
 
@@ -299,16 +315,15 @@ async function callNVIDIA(apiKey: string, messages: ChatMessage[]): Promise<stri
     clearTimeout(timeoutId)
 
     if (!res.ok) {
-      const errText = await res.text()
-      console.error('[AI ERROR] NVIDIA API error:', res.status, errText)
-      
-      // Categorize errors for better handling
+      // Log status code only — never log authorization headers or response bodies
+      console.error('[AI ERROR] NVIDIA API error:', res.status)
+
       if (res.status === 429) {
         throw new Error('RATE_LIMIT_EXCEEDED')
       } else if (res.status >= 500) {
         throw new Error(`SERVER_ERROR_${res.status}`)
       } else {
-        throw new Error(`NVIDIA API error ${res.status}: ${errText}`)
+        throw new Error(`NVIDIA API client error ${res.status}`)
       }
     }
 
@@ -340,6 +355,93 @@ async function callNVIDIA(apiKey: string, messages: ChatMessage[]): Promise<stri
       throw error
     }
     
+    throw new Error('UNKNOWN_ERROR')
+  }
+}
+
+// ─── Groq API call (OpenAI-compatible) ────────────────────────────────────────
+// Emergency fallback provider. Uses llama-3.1-8b-instant — confirmed active
+// production model on Groq (verified via /v1/models at deployment).
+// Receives the full BuzzleMax system prompt and conversation history so pricing
+// and tone remain consistent across all providers.
+async function callGroq(apiKey: string, messages: ChatMessage[]): Promise<string> {
+  const modelName = 'llama-3.1-8b-instant'
+  const timeout = 25000
+
+  const apiMessages: Array<{ role: string; content: string }> = [
+    { role: 'system', content: SYSTEM_PROMPT },
+    ...messages.map((m) => ({
+      role: m.role === 'assistant' ? 'assistant' : 'user',
+      content: m.content,
+    })),
+  ]
+
+  const payload = {
+    model: modelName,
+    messages: apiMessages,
+    temperature: 0.7,
+    max_tokens: 800,
+    top_p: 1,
+  }
+
+  const url = 'https://api.groq.com/openai/v1/chat/completions'
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeout)
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    })
+
+    clearTimeout(timeoutId)
+
+    if (!res.ok) {
+      // Log status code only — never log authorization headers or response bodies
+      console.error('[AI ERROR] Groq API error:', res.status)
+
+      if (res.status === 429) {
+        throw new Error('RATE_LIMIT_EXCEEDED')
+      } else if (res.status >= 500) {
+        throw new Error(`SERVER_ERROR_${res.status}`)
+      } else {
+        throw new Error(`Groq API client error ${res.status}`)
+      }
+    }
+
+    const data = (await res.json()) as {
+      choices?: Array<{
+        message?: { content?: string }
+        finish_reason?: string
+      }>
+    }
+
+    const choice = data.choices?.[0]
+    const text = choice?.message?.content ?? ''
+
+    if (!text) {
+      console.error('[AI ERROR] Empty Groq response. FinishReason:', choice?.finish_reason)
+      throw new Error('EMPTY_RESPONSE')
+    }
+
+    return text
+  } catch (error) {
+    clearTimeout(timeoutId)
+
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        console.error('[AI ERROR] Groq API timeout')
+        throw new Error('TIMEOUT')
+      }
+      throw error
+    }
+
     throw new Error('UNKNOWN_ERROR')
   }
 }
@@ -382,13 +484,14 @@ export default {
 
     // Health check endpoint
     if (request.method === 'GET' && url.pathname === '/health') {
-      const geminiConfigured = !!env.GEMINI_API_KEY
-      const nvidiaConfigured = !!env.NVIDIA_API_KEY
       return new Response(
-        JSON.stringify({ 
-          status: 'ok', 
-          geminiConfigured,
-          nvidiaConfigured,
+        JSON.stringify({
+          status: 'ok',
+          providers: {
+            gemini: !!env.GEMINI_API_KEY,
+            nvidia: !!env.NVIDIA_API_KEY,
+            groq: !!env.GROQ_API_KEY,
+          },
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...cors } }
       )
@@ -460,67 +563,97 @@ export default {
       )
     }
     
+    // Keep last 20 turns to stay within provider context limits
     const recentMessages = messages.slice(-20)
     let aiText: string | null = null
-    let providerUsed: string = 'unknown'
+    let providerUsed: string = 'none'
 
-    // Try Gemini first (primary provider)
+    // ── 1. Try Gemini (primary) ───────────────────────────────────────────────
     try {
-      console.log('[AI] Attempting Gemini API call')
-      // TEMPORARY: Force Gemini failure to test NVIDIA fallback
-      throw new Error('TEST_GEMINI_FAILURE')
+      console.log('[AI] Attempting Gemini')
       aiText = await callGemini(env.GEMINI_API_KEY, recentMessages)
       providerUsed = 'gemini'
-      console.log('[AI] Gemini API call successful')
+      console.log('[AI] Gemini succeeded')
     } catch (geminiError) {
-      console.error('[AI ERROR] Gemini API failed:', geminiError instanceof Error ? geminiError.message : String(geminiError))
-      
-      // Fallback to NVIDIA if configured
-      if (env.NVIDIA_API_KEY) {
-        try {
-          console.log('[AI] Falling back to NVIDIA API')
-          aiText = await callNVIDIA(env.NVIDIA_API_KEY, recentMessages)
-          providerUsed = 'nvidia'
-          console.log('[AI] NVIDIA API call successful')
-        } catch (nvidiaError) {
-          console.error('[AI ERROR] NVIDIA API also failed:', nvidiaError instanceof Error ? nvidiaError.message : String(nvidiaError))
+      const retryable = isRetryableError(geminiError)
+      console.error(
+        '[AI ERROR] Gemini failed:',
+        geminiError instanceof Error ? geminiError.message : String(geminiError),
+        retryable ? '— advancing to fallback' : '— non-retryable'
+      )
+
+      if (retryable) {
+        // ── 2. Try NVIDIA (first fallback) ─────────────────────────────────
+        if (env.NVIDIA_API_KEY) {
+          try {
+            console.log('[AI] Falling back to NVIDIA')
+            aiText = await callNVIDIA(env.NVIDIA_API_KEY, recentMessages)
+            providerUsed = 'nvidia'
+            console.log('[AI] NVIDIA succeeded')
+          } catch (nvidiaError) {
+            console.error(
+              '[AI ERROR] NVIDIA failed:',
+              nvidiaError instanceof Error ? nvidiaError.message : String(nvidiaError),
+              '— advancing to Groq'
+            )
+
+            // ── 3. Try Groq (emergency fallback) ──────────────────────────
+            if (env.GROQ_API_KEY) {
+              try {
+                console.log('[AI] Falling back to Groq (emergency)')
+                aiText = await callGroq(env.GROQ_API_KEY, recentMessages)
+                providerUsed = 'groq'
+                console.log('[AI] Groq succeeded')
+              } catch (groqError) {
+                console.error(
+                  '[AI ERROR] Groq failed:',
+                  groqError instanceof Error ? groqError.message : String(groqError),
+                  '— all providers exhausted'
+                )
+                // All three providers failed — fall through to friendly response
+              }
+            } else {
+              console.log('[AI] No Groq emergency fallback configured')
+            }
+          }
+        } else {
+          // No NVIDIA configured — jump straight to Groq
+          console.log('[AI] No NVIDIA configured — attempting Groq directly')
+          if (env.GROQ_API_KEY) {
+            try {
+              console.log('[AI] Falling back to Groq (emergency, NVIDIA not configured)')
+              aiText = await callGroq(env.GROQ_API_KEY, recentMessages)
+              providerUsed = 'groq'
+              console.log('[AI] Groq succeeded')
+            } catch (groqError) {
+              console.error(
+                '[AI ERROR] Groq failed:',
+                groqError instanceof Error ? groqError.message : String(groqError),
+                '— all providers exhausted'
+              )
+            }
+          } else {
+            console.log('[AI] No fallback providers configured')
+          }
         }
-      } else {
-        console.log('[AI] No NVIDIA fallback configured')
       }
+      // Non-retryable Gemini error: do not call other providers, fall through to friendly response
     }
 
-    // TEMPORARY: Force NVIDIA fallback for testing by invalidating Gemini
-    // Remove this block after testing
-    if (providerUsed === 'gemini') {
-      console.log('[AI TEST] Forcing Gemini failure to test NVIDIA fallback')
-      try {
-        aiText = await callNVIDIA(env.NVIDIA_API_KEY, recentMessages)
-        providerUsed = 'nvidia'
-        console.log('[AI TEST] NVIDIA fallback successful')
-      } catch (nvidiaError) {
-        console.error('[AI TEST] NVIDIA fallback failed:', nvidiaError instanceof Error ? nvidiaError.message : String(nvidiaError))
-        // Restore original Gemini response if NVIDIA fails
-        const originalGeminiResponse = aiText
-        aiText = originalGeminiResponse
-        providerUsed = 'gemini'
-      }
-    }
-
-    // If both providers failed, return friendly error
+    // ── 4. Friendly response if all providers failed ──────────────────────────
     if (!aiText) {
-      console.error('[AI ERROR] All AI providers failed')
+      console.error('[AI ERROR] All AI providers failed — returning friendly response')
       return new Response(
         JSON.stringify({
-          error: 'AI_SERVICE_ERROR',
-          message: "I'm having trouble connecting right now. Please try again in a moment or use our contact form and we'll get back to you."
+          message: "I'm having a little trouble connecting right now. Please try again in a moment, or reach out to the BuzzleMax team directly using the contact form — we'd love to help! 😊",
+          leadCaptureRecommended: true,
         }),
-        { status: 503, headers: { 'Content-Type': 'application/json', ...cors } }
+        { status: 200, headers: { 'Content-Type': 'application/json', ...cors } }
       )
     }
 
     const leadCaptureRecommended = shouldRecommendLeadCapture(aiText, recentMessages)
-    console.log('[AI] Response generated successfully via', providerUsed)
+    console.log('[AI] Response generated via', providerUsed)
 
     return new Response(JSON.stringify({ message: aiText, leadCaptureRecommended }), {
       status: 200,

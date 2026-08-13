@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Sun, Moon, ChevronDown } from 'lucide-react'
+import { Menu, X, Sun, Moon, ChevronDown, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useTheme } from '@/hooks/use-theme'
+import { useUIStore } from '@/stores/ui-store'
 import { cn } from '@/lib/utils'
 import { COMPANY_INFO } from '@/lib/constants'
 import { navigateToHref } from '@/lib/navigation'
@@ -180,6 +181,7 @@ function MobileNavSection({
 export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { setTheme } = useTheme()
+  const { setChatWidgetOpen } = useUIStore()
   const navigate = useNavigate()
 
   return (
@@ -228,6 +230,17 @@ export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarP
 
           {/* Desktop right-hand actions */}
           <div className="hidden md:flex shrink-0 items-center gap-3">
+            {/* Ask AI Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setChatWidgetOpen(true)}
+              className="font-medium h-9 px-3 flex items-center gap-1.5 border-border/50 text-foreground hover:bg-muted"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span>Ask AI</span>
+            </Button>
+
             {/* Theme toggle — strictly tied to existing useTheme hook */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -252,6 +265,17 @@ export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarP
 
           {/* Mobile: theme toggle + hamburger */}
           <div className="flex shrink-0 items-center gap-1.5 pr-1 md:hidden">
+            {/* Ask AI Button (Mobile) */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setChatWidgetOpen(true)}
+              className="font-medium h-9 px-2.5 flex items-center gap-1 border-border/50 text-foreground hover:bg-muted text-xs shrink-0"
+            >
+              <Sparkles className="h-3 w-3 text-primary" />
+              <span>Ask AI</span>
+            </Button>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative h-9 w-9 shrink-0">
