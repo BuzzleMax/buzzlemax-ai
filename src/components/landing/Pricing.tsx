@@ -131,87 +131,44 @@ export function Pricing({ onContactSales }: PricingProps) {
             <motion.div
               key={plan.name}
               variants={cardVariants}
-              className={cn('relative', plan.popular && 'md:-mt-4 md:mb-4')}
+              className="relative"
             >
-              {plan.popular && (
-                <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-10">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5, duration: 0.5 }}
-                    className="relative"
-                  >
-                    <div className="absolute inset-0 bg-white/20 blur-xl rounded-full" />
-                    <div className="relative bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-xl border border-white/30 text-white px-6 py-2 rounded-full text-sm font-semibold tracking-wide shadow-2xl">
-                      <span className="flex items-center gap-2">
-                        <Sparkles className="h-4 w-4" />
-                        Most Popular
-                      </span>
-                    </div>
-                  </motion.div>
-                </div>
-              )}
               <Card
                 className={cn(
                   'h-full transition-all duration-500 backdrop-blur-xl border-white/10 bg-white/5 hover:bg-white/10',
-                  plan.popular
-                    ? 'border-white/20 shadow-2xl shadow-white/5 scale-105'
-                    : 'border-white/5 hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5'
+                  'border-white/5 hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5'
                 )}
               >
                 <CardHeader className="text-center pb-8 pt-8">
-                  <h3 className="text-xl font-semibold mb-8 text-white tracking-wider">
+                  <h3 className="text-xl font-semibold mb-4 text-white tracking-wider">
                     {plan.name}
                   </h3>
                   
-                  {/* One-Time Setup Fee */}
+                  {/* Price */}
                   <div className="mb-6">
-                    <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">
-                      {plan.isEnterprise ? 'Setup' : 'One-Time Setup'}
-                    </p>
+                    {plan.priceRupees && (
+                      <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">
+                        {plan.priceRupees}
+                      </p>
+                    )}
                     <div className="flex flex-col items-center justify-center gap-1">
-                      <div className="flex items-baseline justify-center gap-1">
-                        {plan.isEnterprise && (
-                          <span className="text-sm text-gray-400 mr-1">Starting at</span>
-                        )}
+                      {plan.setupFeeRupees ? (
                         <span className="text-4xl font-bold text-white tracking-tight">
-                          ${plan.setupFee.toLocaleString()}
+                          {plan.setupFeeRupees}
                         </span>
-                      </div>
-                      {plan.setupFeeRupees && (
-                        <span className="text-xs text-gray-400 font-medium">
-                          ({plan.setupFeeRupees})
+                      ) : (
+                        <span className="text-2xl font-bold text-white tracking-tight">
+                          Custom Quote
                         </span>
                       )}
                     </div>
                   </div>
 
-                  {/* Monthly Management */}
+                  {/* Description */}
                   <div className="mb-6">
-                    <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">
-                      Monthly
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      {plan.description}
                     </p>
-                    <div className="flex flex-col items-center justify-center gap-1">
-                      <div className="flex items-baseline justify-center gap-1">
-                        {plan.isEnterprise ? (
-                          <span className="text-2xl font-bold text-white tracking-tight">
-                            Custom Retainer
-                          </span>
-                        ) : (
-                          <>
-                            <span className="text-4xl font-bold text-white tracking-tight">
-                              ${plan.price.toLocaleString()}
-                            </span>
-                            <span className="text-gray-400">/month</span>
-                          </>
-                        )}
-                      </div>
-                      {!plan.isEnterprise && plan.priceRupees && (
-                        <span className="text-xs text-gray-400 font-medium">
-                          ({plan.priceRupees})
-                        </span>
-                      )}
-                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
@@ -245,12 +202,7 @@ export function Pricing({ onContactSales }: PricingProps) {
                     </div>
                   )}
                   <Button
-                    className={cn(
-                      'w-full font-semibold tracking-wide transition-all duration-300 active:scale-95',
-                      plan.popular
-                        ? 'bg-white text-black hover:bg-white/90 shadow-lg shadow-white/20 hover:shadow-xl'
-                        : 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-white/30 hover:shadow-lg'
-                    )}
+                    className="w-full font-semibold tracking-wide transition-all duration-300 active:scale-95 bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-white/30 hover:shadow-lg"
                     size="lg"
                     onClick={() => onContactSales(plan.name)}
                   >

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { MessageSquare, Phone, Headphones, TrendingUp, Filter, Calendar, Database, Mail, MessageCircle, Instagram, BookOpen, Cog, ArrowRight, Check, Sparkles, PhoneCall } from 'lucide-react'
-import { PRICING_PLANS } from '@/lib/constants'
+import { AI_SOLUTIONS_PLANS } from '@/lib/constants'
 
 type AISolution = {
   id: string
@@ -191,7 +191,7 @@ export function AISolutions({ onContactSales }: AISolutionsProps) {
           transition={{ duration: 0.5 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-12"
         >
-          {PRICING_PLANS.map((plan, idx) => (
+          {AI_SOLUTIONS_PLANS.map((plan, idx) => (
             <motion.div
               key={plan.name}
               initial={{ opacity: 0, y: 40 }}
@@ -223,37 +223,39 @@ export function AISolutions({ onContactSales }: AISolutionsProps) {
                   {/* Setup fee */}
                   <div className="mb-5">
                     <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">
-                      {plan.isEnterprise ? 'Setup (Starting at)' : 'One-Time Setup'}
+                      {plan.isEnterprise ? 'Setup' : 'One-Time Setup'}
                     </p>
                     <div className="flex flex-col items-center gap-0.5">
-                      <span className="text-4xl font-bold tracking-tight">
-                        ${plan.setupFee.toLocaleString()}
-                      </span>
-                      {plan.setupFeeRupees && (
-                        <span className="text-xs text-muted-foreground">({plan.setupFeeRupees})</span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Monthly fee */}
-                  <div className="mb-2">
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Monthly</p>
-                    <div className="flex flex-col items-center gap-0.5">
                       {plan.isEnterprise ? (
-                        <span className="text-2xl font-bold">Custom Retainer</span>
+                        <span className="text-2xl font-bold">{plan.setupFeeRupees}</span>
                       ) : (
                         <>
                           <span className="text-4xl font-bold tracking-tight">
-                            ${plan.price.toLocaleString()}
-                            <span className="text-base font-normal text-muted-foreground">/mo</span>
+                            ${plan.setupFee.toLocaleString()}
                           </span>
-                          {plan.priceRupees && (
-                            <span className="text-xs text-muted-foreground">({plan.priceRupees})</span>
+                          {plan.setupFeeRupees && (
+                            <span className="text-xs text-muted-foreground">({plan.setupFeeRupees})</span>
                           )}
                         </>
                       )}
                     </div>
                   </div>
+
+                  {/* Monthly fee */}
+                  {plan.price > 0 && (
+                    <div className="mb-2">
+                      <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Monthly</p>
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-4xl font-bold tracking-tight">
+                          ${plan.price.toLocaleString()}
+                          <span className="text-base font-normal text-muted-foreground">/mo</span>
+                        </span>
+                        {plan.priceRupees && (
+                          <span className="text-xs text-muted-foreground">({plan.priceRupees})</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </CardHeader>
 
                 <CardContent className="pt-0">

@@ -54,36 +54,61 @@ function generatePricingContext(): string {
   return `
 PRIMARY SERVICES & PUBLISHED PRICING:
 
-1. CUSTOM AI DEVELOPMENT (ENTRY-LEVEL):
-   - Custom AI solutions start from ₹5,000. This is the STARTING PRICE for ONE simple/custom AI solution.
-   - Examples include: Website AI chatbot, Custom FAQ AI assistant, Simple customer-support AI, Simple lead-capture AI, Simple website sales assistant, Basic Instagram AI automation, Basic WhatsApp AI automation, Basic custom AI assistant, Other simple AI solutions.
-   - IMPORTANT: ₹5,000 is a STARTING PRICE, NOT a universal fixed price. More complex systems can cost more depending on: integrations, automation complexity, number of platforms, CRM integration, voice functionality, advanced workflows, custom backend requirements, multiple AI agents, large knowledge bases, third-party APIs.
-   - Always say "Custom AI solutions start from ₹5,000" - do NOT say every project costs exactly ₹5,000.
+1. CUSTOM AI SOLUTION
+   - Starting from ₹5,000.
+   - This is for a single focused/custom AI solution such as: Website AI chatbot, FAQ & support AI, Lead-generation AI, Website sales assistant, WhatsApp AI, Instagram AI, Simple custom AI assistant.
+   - IMPORTANT: ₹5,000 is a STARTING PRICE for ONE focused AI solution. More complex systems cost more.
 
-2. WEB DEVELOPMENT:
-   - Business Websites: Starting at $1,000 (90,000 Rupees) (5-10 custom pages, CMS, SEO, contact forms, responsive).
-   - Landing Pages: Starting at $300 (25,000 Rupees) (Custom design, copy, fast loading, lead capture).
-   - E-commerce Stores: Starting at $5,000 (4.5 Lakhs) (Product catalog, payments, inventory, accounts).
-   - Custom Web Applications & SaaS Interfaces: Custom Quote based on scope.
-   - Responsive redesigns and custom frontend development.
+2. AI WORKFLOW
+   - Custom quote.
+   - For connecting AI to existing business tools/workflows, including: WhatsApp + AI, Instagram + AI, Lead automation, CRM integration, Appointment workflows, Customer workflows, Custom business automation.
 
-3. ADVANCED AI SOLUTIONS (MULTI-PLATFORM/ENTERPRISE):
-   ${aiPricing}
-   - These higher-tier plans are for: multiple AI systems, advanced integrations, large automation workflows, enterprise requirements, multiple platforms, complex custom systems, advanced CRM/workflow integration.
-   - NEVER present these as the default answer to someone asking for a simple chatbot.
+3. CUSTOM AI SYSTEM
+   - Custom quote.
+   - For complex requirements including: Multiple AI assistants, AI voice solutions, Knowledge-base AI, Advanced API integrations, Multi-platform systems, Custom AI development, Advanced automation.
 
-4. AUTOMATION (WhatsApp, Leads, Workflows):
-   - WhatsApp Automation (lead capture, support, appointment booking, notifications, order updates).
-   - CRM & Lead Automation (auto-enrich contacts, follow-up triggers, pipeline sync).
-   - Email Automation & Form-to-email routing.
+4. STARTER AI CHATBOT
+   - One-time setup: $997 / ₹90,000
+   - Monthly: $297/mo / ₹25,000/mo
+   - Up to 2,500 AI conversations/month.
+   - Includes: AI Website Chatbot, Lead Capture System, CRM Integration, Email Automation, Monthly AI Optimization, 1 Platform Integration, Performance Dashboard, Email Support.
+
+5. PROFESSIONAL
+   - One-time setup: $2,497
+   - Monthly: $897/mo
+   - Up to 5,000 AI conversations
+   - Up to 500 voice minutes
+   - Includes everything in Starter plus: AI Voice Receptionist, WhatsApp AI, Instagram AI, CRM Automation, Appointment Booking, Workflow Automation, Multi-channel AI Support, Advanced Analytics, Priority Support.
+
+6. ENTERPRISE
+   - Custom pricing.
+   - Includes: Unlimited AI Agents, Internal Knowledge Base AI, Custom AI Workflows, API Integrations, White Label Solutions, Custom Development, Dedicated Account Manager, Priority Support.
+
+7. CUSTOM AI AUDIT CALL
+   - Starting at ₹5,000 (~$60).
+   - This is an audit/strategy service and is NOT the same thing as purchasing a complete enterprise AI system.
 
 CORE PRICING PHILOSOPHY:
 - "BUILD WHAT YOU NEED. PAY FOR WHAT YOU NEED."
 - Don't pay for expensive AI subscriptions packed with features you don't need.
 - We build custom AI solutions around exactly what your business needs.
-- Possible solutions include: Custom AI chatbots, AI customer-support assistants, AI sales assistants, AI lead qualification systems, AI knowledge-base assistants, AI website assistants, AI automation workflows, AI tools integrated into existing business systems, Custom AI workflows, and other AI solutions based on client requirements.
 - When visitors ask about custom AI, understand what they want the AI to do, who will use it, where it needs to work, and what systems it needs to integrate with.
 - When visitors show serious interest, direct them to the website Contact form with service pre-selected as "Custom AI".
+
+AI SALES BEHAVIOR RULES:
+- The AI must NOT immediately show the ₹90,000 Starter plan whenever someone simply says "I need an AI chatbot."
+- Instead, it should first understand what the visitor actually needs.
+- If the visitor has a small budget, the AI should NOT tell them that the minimum is ₹90,000.
+- The AI should prioritize the LOWEST RELEVANT price that actually matches the customer's requirements.
+- The AI must NEVER falsely claim that every AI project costs ₹90,000.
+- It should distinguish between: ₹5,000 starting custom AI solution (one focused AI solution), Custom AI Workflow (custom quote), Custom AI System (custom quote), $997 / ₹90,000 Starter AI Chatbot (more complete business chatbot package with integrations and ongoing optimization), $2,497 + $897/mo Professional (advanced multi-platform AI package), Enterprise (custom pricing), ₹5,000 Custom AI Audit Call (strategy/audit service, not the full implementation).
+- If the customer only needs one simple AI, recommend the ₹5,000 starting custom solution when appropriate.
+- If the customer clearly needs the features included in Starter, Professional, or Enterprise, explain those plans instead.
+- Do not pressure visitors into expensive plans.
+- Do not invent prices, features, discounts, or guarantees.
+- Use INR pricing naturally when the visitor appears to be in India or mentions rupees.
+- Use USD pricing when the visitor asks in USD.
+- If requirements are unclear, ask a short clarification question instead of immediately recommending the most expensive plan.
 `
 }
 
@@ -118,17 +143,8 @@ The AI must NOT immediately recommend the expensive ₹90,000+ plan when someone
 The AI should first understand what the client actually needs.
 
 EXAMPLE GOOD RESPONSES:
-- User: "I need an AI chatbot for my simple website."
-  AI: "Absolutely. If you only need one AI chatbot for your website, our custom AI solutions start from ₹5,000. Before I recommend anything, do you need: 1. One chatbot for one website, 2. Multiple AI assistants, 3. A larger AI automation system across platforms?"
-
-- User: "I need a WhatsApp bot."
-  AI: "Yes, we can build custom WhatsApp AI solutions starting from ₹5,000. The exact price depends on how advanced the automation needs to be. Do you mainly want it to answer customer questions, capture leads, or handle a more advanced workflow?"
-
-- User: "I need an Instagram bot."
-  AI: "We can build custom Instagram AI solutions starting from ₹5,000. If it's a simple AI assistant, we can keep the setup lightweight and affordable. If you need advanced automation or multiple integrations, we can scale it from there. What would you like the Instagram AI to do?"
-
-- User: "I need an AI voice chatbot."
-  AI: "We can build custom AI voice solutions starting from ₹5,000. The final price depends on the voice provider, call flow, integrations and how advanced you want the system to be. Would you like it mainly for answering calls, qualifying leads, or handling customer support?"
+- User: "I need an AI chatbot."
+  AI: "Absolutely. I can help with that. Is this for a website, WhatsApp, Instagram, voice, or another platform? And do you need one focused AI solution or multiple AI systems?"
 
 - User: "I only have ₹10,000."
   AI: "₹10,000 is a workable starting budget for a focused AI solution. We can start with one useful AI assistant rather than building a large system you don't need. For example, we could build a simple website chatbot, FAQ assistant, or lead-generation AI depending on your business. What would you like the AI to do?"
@@ -164,7 +180,7 @@ DISCOVERY FLOW (ASK ONE USEFUL QUESTION AT A TIME):
 
 PRICING & TIMELINE BEHAVIOR (STRICT RULES):
 - Never give exact guaranteed price quotes. ALWAYS state: "Final quote will be shared after understanding your requirement."
-- If pricing is asked, state published rough starting ranges (e.g. ₹5,000 for custom AI solutions, $300/25,000 Rupees for landing pages, $1,000/90,000 Rupees for business websites, $997/90,000 Rupees setup for AI chatbot, or 5,000 Rupees for an AI Audit Call).
+- If pricing is asked, state published rough starting ranges (e.g. ₹5,000 for custom AI solutions, $300/25,000 Rupees for landing pages, $1,000/90,000 Rupees for business websites, $997/₹90,000 setup + $297/₹25,000 monthly for Starter AI Chatbot, $2,497 setup + $897 monthly for Professional, or ₹5,000 for an AI Audit Call).
 - For custom AI development: Always say "Custom AI solutions start from ₹5,000" and explain that scope determines cost for more complex implementations.
 - Never invent discounts, promotions, or free items.
 - Never promise exact delivery dates (e.g. "7 days"). Explain timelines depend on project scope, features, integrations, and feedback: "Once we understand your requirements, we'll provide an estimated timeline."

@@ -38,6 +38,33 @@ export declare const PRICING_PLANS: ({
     popular: boolean;
     isEnterprise: boolean;
 })[];
+export declare const AI_SOLUTIONS_PLANS: ({
+    name: string;
+    setupFee: number;
+    setupFeeRupees: string;
+    price: number;
+    priceRupees: string;
+    period: string;
+    description: string;
+    features: string[];
+    usage: string[];
+    cta: string;
+    popular: boolean;
+    isEnterprise?: undefined;
+} | {
+    name: string;
+    setupFee: number;
+    setupFeeRupees: string;
+    price: number;
+    priceRupees: string;
+    period: string;
+    description: string;
+    features: string[];
+    usage: any[];
+    cta: string;
+    popular: boolean;
+    isEnterprise: boolean;
+})[];
 export declare const STATS: {
     label: string;
     value: string;
