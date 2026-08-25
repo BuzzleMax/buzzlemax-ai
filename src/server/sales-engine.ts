@@ -279,12 +279,14 @@ export async function processChatRequest(
       }
     } catch (error) {
       console.error('[BuzzleMax AI API Error]:', error)
-      // Gracefully fall back to local rule engine on API error
     }
   }
 
-  // 4. Fallback Rule Engine (guarantees production quality even without external key)
-  return runFallbackSalesEngine(userText, recentMessages)
+  // 4. Honest error response if providers fail or key is missing
+  return {
+    message: "Sorry, the AI is temporarily unavailable. Please try again in a moment.",
+    leadCaptureRecommended: true,
+  }
 }
 
 async function callGeminiAPI(apiKey: string, messages: ChatMessage[]): Promise<ChatResponse> {
@@ -313,7 +315,7 @@ async function callGeminiAPI(apiKey: string, messages: ChatMessage[]): Promise<C
     ],
   }
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`
 
   const res = await fetch(url, {
     method: 'POST',
@@ -401,192 +403,4 @@ function checkLeadCaptureRecommendation(aiResponse: string, messages: ChatMessag
   }
 
   return false
-}
-
-function runFallbackSalesEngine(userText: string, messages: ChatMessage[]): ChatResponse {
-  const text = userText.toLowerCase()
-  const allText = messages.map((m) => m.content.toLowerCase()).join(' ')
-  
-  // Get dynamic pricing context
-  const aiPricing = PRICING_PLANS.map(plan => {
-    let pricing = ''
-    if (plan.isEnterprise) {
-      pricing = `$${plan.setupFee} (${plan.setupFeeRupees}) setup + custom monthly rate`
-    } else {
-      pricing = `$${plan.setupFee} (${plan.setupFeeRupees}) setup + $${plan.price}/month (${plan.priceRupees})`
-    }
-    return `${plan.name}: ${pricing}`
-  }).join(', ')
-
-  // Test 7: Human Handoff / Talk to someone
-  if (
-    text.includes('talk to someone') ||
-    text.includes('speak to human') ||
-    text.includes('contact human') ||
-    text.includes('reach out') ||
-    text.includes('call me')
-  ) {
-    return {
-      message:
-        "I'd be happy to connect you directly with the BuzzleMax team! Let's get a few quick details or you can fill out our contact form.",
-      leadCaptureRecommended: true,
-    }
-  }
-
-  // Budget sensitivity - handle small budgets
-  if (
-    text.includes('budget') ||
-    text.includes('only have') ||
-    text.includes('afford') ||
-    text.includes('cheap') ||
-    text.includes('expensive')
-  ) {
-    return {
-      message:
-        "We work with businesses of all sizes! Custom AI solutions start from ₹5,000 for focused solutions. What would you like the AI to do? I can help you find the most affordable option for your needs.",
-      leadCaptureRecommended: false,
-    }
-  }
-
-  // Test 2 & Modular Pricing: Standalone WhatsApp automation
-  if (
-    text.includes('whatsapp') ||
-    (text.includes('only need') && text.includes('automation'))
-  ) {
-    return {
-      message:
-        "Absolutely — you don't need to purchase a full website package for that. BuzzleMax provides WhatsApp automation as a standalone solution. Custom WhatsApp AI solutions start from ₹5,000. What would you like WhatsApp to automate? (e.g., lead capture, customer support, appointment booking, or notifications)? Final quote will be shared after understanding your requirement.",
-      leadCaptureRecommended: false,
-    }
-  }
-
-  // Instagram automation
-  if (text.includes('instagram')) {
-    return {
-      message:
-        "We can build custom Instagram AI solutions starting from ₹5,000. What would you like the Instagram AI to do? (e.g., respond to DMs, automate comments, handle customer queries)? Final quote will be shared after understanding your requirement.",
-      leadCaptureRecommended: false,
-    }
-  }
-
-  // Test 3 & Test 6: Pricing / Cost / Guaranteed Price
-  if (
-    text.includes('how much') ||
-    text.includes('price') ||
-    text.includes('cost') ||
-    text.includes('pricing') ||
-    text.includes('guarantee') ||
-    text.includes('quote')
-  ) {
-    if (allText.includes('website') || text.includes('website') || text.includes('landing')) {
-      return {
-        message:
-          "At BuzzleMax, our web development pricing starts at $300 (25,000 Rupees) for high-converting landing pages, $1,000 (90,000 Rupees) for full business websites, and $5,000 (4.5 Lakhs) for e-commerce stores. Final quote will be shared after understanding your requirement. What type of website are you looking to build?",
-        leadCaptureRecommended: false,
-      }
-    }
-
-    if (allText.includes('ai') || text.includes('ai') || text.includes('bot')) {
-      return {
-        message:
-          "Custom AI solutions start from ₹5,000 for simple solutions like website chatbots, FAQ assistants, or basic automation. For more advanced multi-platform systems, we have comprehensive plans. What specific AI solution are you looking for?",
-        leadCaptureRecommended: false,
-      }
-    }
-
-    return {
-      message:
-        "BuzzleMax offers flexible starting ranges based on project type—such as custom AI solutions starting from ₹5,000, landing pages starting at $300 (25,000 Rupees), and business websites from $1,000 (90,000 Rupees). Final quote will be shared after understanding your requirement. What specific project do you have in mind?",
-      leadCaptureRecommended: false,
-    }
-  }
-
-  // Test 5: Timelines / Finish date
-  if (
-    text.includes('when') ||
-    text.includes('how long') ||
-    text.includes('timeline') ||
-    text.includes('delivery') ||
-    text.includes('days') ||
-    text.includes('finish')
-  ) {
-    return {
-      message:
-        "Timelines depend on the exact project scope, features, feedback, and integrations. Once we understand your requirements, we'll provide an estimated timeline. Would you like to share a few details about what you'd like to build?",
-      leadCaptureRecommended: false,
-    }
-  }
-
-  // Test 4: Extremely custom requirement
-  if (
-    text.includes('custom') ||
-    text.includes('complex') ||
-    text.includes('enterprise') ||
-    text.includes('saas') ||
-    text.includes('app')
-  ) {
-    return {
-      message:
-        "We specialize in custom web applications, SaaS interfaces, and custom AI workflows! That sounds like a specialized project. Let's get the details to the BuzzleMax team so we can provide a tailored recommendation.",
-      leadCaptureRecommended: true,
-    }
-  }
-
-  // Test 8: Services offered
-  if (
-    text.includes('services') ||
-    text.includes('offer') ||
-    text.includes('what do you do') ||
-    text.includes('capabilities')
-  ) {
-    return {
-      message:
-        "BuzzleMax provides three core modular solutions:\n\n" +
-        "• 🌐 **Web Development**: Custom business websites, landing pages, e-commerce stores, and SaaS web apps.\n" +
-        "• 🤖 **AI Solutions**: 24/7 AI chatbots, AI voice receptionists, and custom AI integrations.\n" +
-        "• 💬 **Automation**: Standalone WhatsApp automation, lead workflows, CRM sync, and email automation.\n\n" +
-        "What are you looking to build or automate?",
-      leadCaptureRecommended: false,
-    }
-  }
-
-  // Test 1: Website discovery flow
-  if (text.includes('website') || text.includes('site') || text.includes('landing')) {
-    if (!allText.includes('new one') && !allText.includes('already have')) {
-      return {
-        message:
-          "Great! Do you already have an existing website you'd like to redesign, or would this be a brand new website?",
-        leadCaptureRecommended: false,
-      }
-    }
-    return {
-      message:
-        "Got it! What key features or goals would you like this website to achieve (e.g. lead capture, online booking, e-commerce, custom UI)?",
-      leadCaptureRecommended: false,
-    }
-  }
-
-  // AI discovery flow - with new ₹5,000 positioning
-  if (text.includes('ai') || text.includes('chatbot') || text.includes('assistant')) {
-    // Check if they're asking about a simple/single AI solution
-    if (text.includes('simple') || text.includes('single') || text.includes('one') || text.includes('basic')) {
-      return {
-        message:
-          "Custom AI solutions start from ₹5,000 for simple solutions like website chatbots, FAQ assistants, or basic automation. What would you like the AI to do for your business?",
-        leadCaptureRecommended: false,
-      }
-    }
-    return {
-      message:
-        "Awesome! What would you like the AI to actually do for your business? (e.g. qualify leads, answer customer support FAQs 24/7, or book appointments)? Our custom AI solutions start from ₹5,000 for simple solutions.",
-      leadCaptureRecommended: false,
-    }
-  }
-
-  // Default friendly sales rep response
-  return {
-    message:
-      "That sounds interesting! BuzzleMax can build custom web applications, AI chatbots, or standalone automations tailored to your needs. Could you tell me a little more about your primary goal?",
-    leadCaptureRecommended: false,
-  }
 }

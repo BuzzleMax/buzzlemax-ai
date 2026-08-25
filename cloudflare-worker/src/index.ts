@@ -182,7 +182,7 @@ function isRetryableError(error: unknown): boolean {
 
 // ─── Gemini API call ──────────────────────────────────────────────────────────
 async function callGemini(apiKey: string, messages: ChatMessage[]): Promise<string> {
-  const modelName = 'gemini-flash-latest'
+  const modelName = 'gemini-3.6-flash'
   const timeout = 25000 // 25 second timeout for Worker
   
   // Gemini uses 'model' role for assistant turns; filter out system messages from history
@@ -275,7 +275,7 @@ async function callGemini(apiKey: string, messages: ChatMessage[]): Promise<stri
 
 // ─── NVIDIA NIM API call (OpenAI-compatible) ───────────────────────────────────
 async function callNVIDIA(apiKey: string, messages: ChatMessage[]): Promise<string> {
-  const modelName = 'meta/llama-3.1-8b-instruct'
+  const modelName = 'z-ai/glm-5.2'
   const timeout = 25000 // 25 second timeout for Worker
   
   // NVIDIA uses OpenAI-compatible format; convert messages and add system prompt
@@ -640,12 +640,12 @@ export default {
       // Non-retryable Gemini error: do not call other providers, fall through to friendly response
     }
 
-    // ── 4. Friendly response if all providers failed ──────────────────────────
+    // ── 4. Honest response if all providers failed ──────────────────────────
     if (!aiText) {
-      console.error('[AI ERROR] All AI providers failed — returning friendly response')
+      console.error('[AI ERROR] All AI providers failed — returning honest response')
       return new Response(
         JSON.stringify({
-          message: "I'm having a little trouble connecting right now. Please try again in a moment, or reach out to the BuzzleMax team directly using the contact form — we'd love to help! 😊",
+          message: "Sorry, the AI is temporarily unavailable. Please try again in a moment.",
           leadCaptureRecommended: true,
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...cors } }

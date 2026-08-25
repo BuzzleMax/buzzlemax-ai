@@ -10,7 +10,7 @@ import {
   ExternalLink,
 } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
+
 import { Input } from '@/components/ui/input'
 import { useUIStore } from '@/stores/ui-store'
 import { trackChatEvent } from '@/lib/analytics'
@@ -325,34 +325,26 @@ export function ChatWidget() {
           )}
         </AnimatePresence>
 
-        <Button
+        <button
           onClick={() => setChatWidgetOpen(!chatWidgetOpen)}
-          size="icon"
           aria-label={chatWidgetOpen ? 'Close AI Sales Assistant' : 'Open AI Sales Assistant'}
           aria-expanded={chatWidgetOpen}
           className={cn(
-            'relative h-14 w-14 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95',
+            'relative w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform overflow-hidden',
             chatWidgetOpen
               ? 'bg-muted text-foreground hover:bg-muted/80'
-              : 'bg-primary text-primary-foreground shadow-primary/25'
+              : 'bg-white text-black'
           )}
         >
           {chatWidgetOpen ? (
             <X className="h-6 w-6" />
           ) : (
             <>
-              <img
-                src="/buzzlemax-ai-icon.png"
-                alt="BuzzleMax AI"
-                className="h-7 w-7"
-              />
-              <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-4 w-4 rounded-full bg-emerald-500" />
-              </span>
+              <Sparkles className="h-6 w-6 object-contain" />
+              <span className="absolute top-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-background" />
             </>
           )}
-        </Button>
+        </button>
       </div>
 
       {/* Chat Panel Container */}
@@ -364,7 +356,7 @@ export function ChatWidget() {
             exit={{ opacity: 0, y: 20, scale: 0.96 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
             className={cn(
-              'fixed z-50 flex flex-col overflow-hidden border border-border bg-card text-card-foreground shadow-2xl backdrop-blur-xl',
+              'fixed z-50 flex flex-col overflow-hidden border border-slate-800 bg-slate-900/95 text-card-foreground shadow-2xl backdrop-blur-md',
               // Desktop layout (floating popover)
               'sm:bottom-24 sm:right-5 sm:w-[410px] sm:max-w-[calc(100vw-2.5rem)] sm:h-[580px] sm:max-h-[calc(100vh-7rem)] sm:rounded-3xl',
               // Mobile layout (bottom sheet modal)
@@ -374,22 +366,19 @@ export function ChatWidget() {
             aria-label="BuzzleMax AI Sales Assistant Chat"
           >
             {/* Header */}
-            <div className="flex shrink-0 items-center justify-between border-b border-border bg-muted/60 px-5 py-4 backdrop-blur-md">
+            <div className="flex shrink-0 items-center justify-between border-b border-border bg-slate-900/95 backdrop-blur-md px-5 py-4">
               <div className="flex items-center gap-3">
-                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20 overflow-hidden">
-                  <img
-                    src="/buzzlemax-ai-icon.png"
-                    alt="BuzzleMax AI"
-                    className="h-6 w-6"
-                  />
-                  <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-card" />
+                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-800/80 border border-slate-700/60">
+                  <Sparkles className="h-5 w-5 text-emerald-400" />
+                  <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-slate-900" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-base font-bold tracking-tight text-foreground">
                       BuzzleMax AI
                     </h3>
-                    <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                    <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
                       Online
                     </span>
                   </div>
@@ -398,31 +387,27 @@ export function ChatWidget() {
               </div>
 
               <div className="flex items-center gap-1">
-                <Button
-                  variant="ghost"
-                  size="icon"
+                <button
                   onClick={handleResetChat}
                   title="Reset conversation"
                   aria-label="Reset conversation"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground flex items-center justify-center rounded-lg hover:bg-slate-800 transition-colors"
                 >
                   <RotateCcw className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
+                </button>
+                <button
                   onClick={() => setChatWidgetOpen(false)}
                   title="Close chat"
                   aria-label="Close chat"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground flex items-center justify-center rounded-lg hover:bg-slate-800 transition-colors"
                 >
                   <X className="h-5 w-5" />
-                </Button>
+                </button>
               </div>
             </div>
 
             {/* Chat Body & Message Stream */}
-            <div className="flex flex-1 flex-col overflow-y-auto p-4 space-y-4 bg-background/40">
+            <div className="flex flex-1 flex-col overflow-y-auto p-4 space-y-4 bg-slate-900/95">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
@@ -433,21 +418,13 @@ export function ChatWidget() {
                 >
                   <div className={cn('flex items-end gap-2 max-w-[88%]', msg.role === 'user' && 'flex-row-reverse')}>
                     {msg.role === 'assistant' && (
-                      <div className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20 overflow-hidden">
-                        <img
-                          src="/buzzlemax-ai-icon.png"
-                          alt="BuzzleMax AI"
-                          className="h-4 w-4"
-                        />
+                      <div className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-800 border border-slate-700">
+                        <Sparkles className="h-4 w-4 text-emerald-400 object-contain" />
                       </div>
                     )}
                     {msg.role === 'user' && (
-                      <div className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground overflow-hidden">
-                        <img
-                          src="/buzzlemax-logo.png"
-                          alt="User"
-                          className="h-4 w-4"
-                        />
+                      <div className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-800 border border-slate-700">
+                        <Sparkles className="h-4 w-4 text-emerald-400 object-contain" />
                       </div>
                     )}
 
@@ -455,8 +432,8 @@ export function ChatWidget() {
                       className={cn(
                         'rounded-2xl px-4 py-3 text-sm shadow-sm',
                         msg.role === 'user'
-                          ? 'bg-primary text-primary-foreground rounded-br-none'
-                          : 'bg-muted/90 text-foreground border border-border/60 rounded-bl-none'
+                          ? 'bg-slate-800 text-white rounded-br-none border border-slate-700'
+                          : 'bg-slate-800/80 text-foreground border border-slate-700 rounded-bl-none'
                       )}
                     >
                       <SafeMarkdownText text={msg.content} isUser={msg.role === 'user'} />
@@ -470,10 +447,10 @@ export function ChatWidget() {
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="ml-9 mt-2 w-[92%] max-w-sm rounded-2xl border border-primary/25 bg-card p-4 shadow-md"
+                      className="ml-9 mt-2 w-[92%] max-w-sm rounded-2xl border border-slate-700 bg-slate-800/80 p-4 shadow-md"
                     >
                       <h4 className="text-xs font-bold text-foreground mb-1 flex items-center gap-1.5">
-                        <Sparkles className="h-3.5 w-3.5 text-primary" /> Request BuzzleMax Follow-up
+                        <Sparkles className="h-3.5 w-3.5 text-emerald-400" /> Request BuzzleMax Follow-up
                       </h4>
                       <p className="text-xs text-muted-foreground mb-3">
                         Share your details so our team can send a tailored proposal.
@@ -506,27 +483,24 @@ export function ChatWidget() {
                         />
 
                         <div className="flex items-center gap-2 pt-1">
-                          <Button
+                          <button
                             type="submit"
-                            size="sm"
                             disabled={isSubmittingLead}
-                            className="h-8 flex-1 text-xs font-semibold"
+                            className="h-8 flex-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                           >
                             {isSubmittingLead ? (
                               <Loader2 className="h-3.5 w-3.5 animate-spin" />
                             ) : (
                               'Submit Details'
                             )}
-                          </Button>
-                          <Button
+                          </button>
+                          <button
                             type="button"
-                            variant="outline"
-                            size="sm"
                             onClick={() => triggerHandoffToContactForm(msg.content)}
-                            className="h-8 text-xs"
+                            className="h-8 px-3 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700 text-foreground text-xs font-medium transition-colors flex items-center gap-1.5"
                           >
-                            Use Contact Form <ExternalLink className="ml-1 h-3 w-3" />
-                          </Button>
+                            Use Contact Form <ExternalLink className="h-3 w-3" />
+                          </button>
                         </div>
                       </form>
                     </motion.div>
@@ -549,17 +523,13 @@ export function ChatWidget() {
               {/* Typing Indicator */}
               {isLoading && (
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20 overflow-hidden">
-                    <img
-                      src="/buzzlemax-ai-icon.png"
-                      alt="BuzzleMax AI"
-                      className="h-4 w-4"
-                    />
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-800 border border-slate-700">
+                    <Sparkles className="h-4 w-4 text-emerald-400 object-contain" />
                   </div>
-                  <div className="flex items-center gap-1.5 rounded-2xl bg-muted px-4 py-2.5 text-xs">
-                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-primary" />
-                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-primary [animation-delay:0.2s]" />
-                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-primary [animation-delay:0.4s]" />
+                  <div className="flex items-center gap-1.5 rounded-2xl bg-slate-800 px-4 py-2.5 text-xs">
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-400" />
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-400 [animation-delay:0.2s]" />
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-400 [animation-delay:0.4s]" />
                   </div>
                 </div>
               )}
@@ -568,7 +538,7 @@ export function ChatWidget() {
             </div>
 
             {/* Quick Actions Chips */}
-            <div className="border-t border-border bg-muted/30 px-3 py-2 shrink-0">
+            <div className="border-t border-slate-800 bg-slate-900/95 px-3 py-2 shrink-0">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
                 {/* Use dynamic quick actions from last assistant message if available */}
                 {(() => {
@@ -590,7 +560,7 @@ export function ChatWidget() {
                         <button
                           key={action.label}
                           onClick={() => handleSendMessage(action.prompt)}
-                          className="shrink-0 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/40 transition-colors"
+                          className="shrink-0 rounded-full border border-slate-700 bg-slate-800/50 px-3 py-1 text-xs font-medium text-foreground hover:bg-slate-700 hover:text-emerald-400 hover:border-emerald-500/40 transition-colors"
                         >
                           {action.label}
                         </button>
@@ -599,7 +569,7 @@ export function ChatWidget() {
                         <button
                           key={action.label}
                           onClick={() => handleSendMessage(action.prompt)}
-                          className="shrink-0 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/40 transition-colors"
+                          className="shrink-0 rounded-full border border-slate-700 bg-slate-800/50 px-3 py-1 text-xs font-medium text-foreground hover:bg-slate-700 hover:text-emerald-400 hover:border-emerald-500/40 transition-colors"
                         >
                           {action.label}
                         </button>
@@ -609,7 +579,7 @@ export function ChatWidget() {
             </div>
 
             {/* Input Bar */}
-            <div className="border-t border-border bg-card p-3 shrink-0">
+            <div className="border-t border-slate-800 bg-slate-900/95 p-3 shrink-0">
               <form
                 onSubmit={(e) => {
                   e.preventDefault()
@@ -622,15 +592,14 @@ export function ChatWidget() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Ask BuzzleMax AI..."
-                  className="h-10 flex-1 rounded-xl text-sm bg-muted/40 border-border focus-visible:ring-primary"
+                  className="h-10 flex-1 rounded-xl text-sm bg-slate-800/50 border-slate-700 focus-visible:ring-emerald-500"
                   disabled={isLoading}
                 />
 
-                <Button
+                <button
                   type="submit"
-                  size="icon"
                   disabled={isLoading || !inputValue.trim()}
-                  className="h-10 w-10 shrink-0 rounded-xl font-semibold shadow-md"
+                  className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-label="Send message"
                   onClick={(e) => {
                     // Prevent double submission
@@ -639,14 +608,14 @@ export function ChatWidget() {
                     }
                   }}
                 >
-                  <Send className="h-4 w-4" />
-                </Button>
+                  <Send className="w-4 h-4" />
+                </button>
               </form>
               <div className="mt-1.5 flex items-center justify-between px-1 text-[10px] text-muted-foreground">
                 <span>Final quotes shared after requirements review.</span>
                 <button
                   onClick={() => triggerHandoffToContactForm()}
-                  className="hover:underline text-primary font-medium"
+                  className="hover:underline text-emerald-400 font-medium"
                 >
                   Contact Form
                 </button>

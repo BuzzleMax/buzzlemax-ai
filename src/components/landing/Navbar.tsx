@@ -197,20 +197,19 @@ export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarP
     >
       <div
         className={cn(
-          'mx-auto max-w-7xl sm:px-6 lg:px-8',
-          compactLandingLayout ? 'px-3' : 'px-4'
+          'mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8',
+          compactLandingLayout ? 'px-3' : ''
         )}
       >
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex min-w-0 items-center gap-2">
+          <div className="flex flex-shrink-0 items-center gap-2.5">
             <img
               src="/buzzlemax-logo.png"
               alt="Buzzlemax AI Logo"
-              className="h-8 w-auto shrink-0 md:h-9"
-              style={{ height: '32px', width: 'auto' }}
+              className="h-7 w-auto object-contain md:h-8"
             />
-            <span className="truncate text-xl font-bold tracking-tight">
+            <span className="text-sm font-bold tracking-tight text-foreground sm:text-base">
               {COMPANY_INFO.name}
             </span>
           </div>
@@ -264,7 +263,7 @@ export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarP
           </div>
 
           {/* Mobile: theme toggle + hamburger */}
-          <div className="flex shrink-0 items-center gap-1.5 pr-1 md:hidden">
+          <div className="flex shrink-0 items-center gap-2 md:hidden">
             {/* Ask AI Button (Mobile) */}
             <Button
               variant="outline"
