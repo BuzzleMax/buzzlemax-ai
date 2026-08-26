@@ -25,7 +25,7 @@ export function Footer() {
               <img
                 src="/buzzlemax-logo.png"
                 alt="Buzzlemax AI Logo"
-                className="h-8 w-auto"
+                className="h-9 w-9 object-contain rounded-md"
               />
               <span className="text-xl font-bold tracking-tight">
                 {COMPANY_INFO.name}

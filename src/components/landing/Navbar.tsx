@@ -207,7 +207,7 @@ export function Navbar({ onContactSales, compactLandingLayout = false }: NavbarP
             <img
               src="/buzzlemax-logo.png"
               alt="Buzzlemax AI Logo"
-              className="h-7 w-auto object-contain md:h-8"
+              className="h-8 w-8 object-contain rounded-md md:h-9 md:w-9"
             />
             <span className="text-sm font-bold tracking-tight text-foreground sm:text-base">
               {COMPANY_INFO.name}
