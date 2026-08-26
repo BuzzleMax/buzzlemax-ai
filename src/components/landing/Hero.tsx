@@ -47,48 +47,59 @@ export function Hero({ onContactSales }: HeroProps) {
   return (
     <section
       ref={ref}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0B0813]"
       aria-labelledby="hero-heading"
     >
-      <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden="true">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#7C3AED]/[0.05] via-background via-45% to-background" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_72%_52%_at_50%_34%,rgba(139,92,246,0.21),transparent_68%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_58%_42%_at_28%_30%,rgba(124,58,237,0.15),transparent_72%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_54%_38%_at_72%_30%,rgba(168,85,247,0.14),transparent_74%)]" />
+      <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden" aria-hidden="true">
+        {/* Deep Obsidian Black Base (#0B0813) */}
+        <div className="absolute inset-0 bg-[#0B0813]" />
+
+        {/* Ethereal Violet Aurora Wave 1: Neon Amethyst (#A855F7) & Royal Purple (#581C87) Top-Left Stream */}
         <motion.div
           animate={{
-            x: ['-2%', '2%', '-2%'],
-            y: ['0%', '-3%', '0%'],
-            scale: [1, 1.04, 1],
-            opacity: [0.75, 0.9, 0.75],
-          }}
-          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute left-1/2 top-[34%] h-[30rem] w-[calc(100vw-4rem)] max-w-[60rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.27)_0%,rgba(124,58,237,0.18)_34%,rgba(168,85,247,0.08)_58%,transparent_78%)] blur-[110px] sm:h-[42rem] sm:w-[calc(100vw-3rem)] sm:max-w-[70rem] lg:h-[54rem] lg:max-w-[82rem]"
-          style={{ willChange: 'transform, opacity' }}
-        />
-        <motion.div
-          animate={{
-            x: ['1%', '-2%', '1%'],
-            y: ['2%', '-1%', '2%'],
-            scale: [1.02, 0.98, 1.02],
-            opacity: [0.6, 0.72, 0.6],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute left-[42%] top-[32%] h-[26rem] w-[calc(100vw-5rem)] max-w-[48rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(124,58,237,0.24)_0%,rgba(139,92,246,0.12)_44%,transparent_74%)] blur-[130px] sm:h-[34rem] sm:w-[calc(100vw-4rem)] sm:max-w-[56rem] lg:h-[46rem] lg:max-w-[66rem]"
-          style={{ willChange: 'transform, opacity' }}
-        />
-        <motion.div
-          animate={{
-            x: ['2%', '-1%', '2%'],
-            y: ['-1%', '2%', '-1%'],
-            scale: [0.98, 1.03, 0.98],
-            opacity: [0.48, 0.6, 0.48],
+            x: ['-6%', '6%', '-6%'],
+            y: ['-3%', '5%', '-3%'],
+            scale: [1, 1.15, 1],
+            rotate: [-5, 5, -5],
+            opacity: [0.7, 0.9, 0.7],
           }}
           transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute left-[58%] top-[30%] h-[24rem] w-[calc(100vw-5.5rem)] max-w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.24)_0%,rgba(139,92,246,0.10)_46%,transparent_76%)] blur-[140px] sm:h-[32rem] sm:w-[calc(100vw-4rem)] sm:max-w-[50rem] lg:h-[42rem] lg:max-w-[58rem]"
+          className="absolute -top-[25%] left-[-15%] h-[50rem] w-[60rem] rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.42)_0%,rgba(88,28,135,0.36)_45%,rgba(11,8,19,0)_75%)] blur-[120px]"
           style={{ willChange: 'transform, opacity' }}
         />
-        {/* <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_36%,transparent_0%,rgba(2,6,23,0.03)_58%,rgba(2,6,23,0.08)_100%)]" /> */}
+
+        {/* Ethereal Violet Aurora Wave 2: Royal Purple (#581C87) & Neon Amethyst (#A855F7) Top-Right Stream */}
+        <motion.div
+          animate={{
+            x: ['5%', '-5%', '5%'],
+            y: ['4%', '-4%', '4%'],
+            scale: [1.1, 0.95, 1.1],
+            rotate: [6, -4, 6],
+            opacity: [0.65, 0.85, 0.65],
+          }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-[20%] right-[-15%] h-[55rem] w-[65rem] rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(88,28,135,0.48)_0%,rgba(168,85,247,0.32)_50%,rgba(11,8,19,0)_75%)] blur-[130px]"
+          style={{ willChange: 'transform, opacity' }}
+        />
+
+        {/* Ethereal Violet Aurora Wave 3: Bottom Amethyst Flow */}
+        <motion.div
+          animate={{
+            x: ['-4%', '4%', '-4%'],
+            y: ['5%', '-3%', '5%'],
+            scale: [0.95, 1.08, 0.95],
+            opacity: [0.55, 0.75, 0.55],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -bottom-[25%] left-[10%] h-[45rem] w-[70rem] rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.32)_0%,rgba(88,28,135,0.40)_55%,rgba(11,8,19,0)_80%)] blur-[140px]"
+          style={{ willChange: 'transform, opacity' }}
+        />
+
+        {/* Darkened Center Vignette for High Headline Contrast */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_65%_at_50%_42%,rgba(11,8,19,0.82)_0%,rgba(11,8,19,0.40)_60%,transparent_100%)]" />
+
+        {/* Smooth Bottom Fade to Background */}
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-32 pb-20">
@@ -99,8 +110,8 @@ export function Hero({ onContactSales }: HeroProps) {
           className="text-center max-w-4xl mx-auto"
         >
           <motion.div variants={itemVariants}>
-            <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm font-medium text-primary mb-6">
-              <span className="mr-2 h-2 w-2 rounded-full bg-primary animate-pulse" />
+            <span className="inline-flex items-center rounded-full border border-[#A855F7]/30 bg-gradient-to-r from-[#581C87]/25 to-[#A855F7]/20 px-3.5 py-1.5 text-sm font-medium text-purple-300 shadow-[0_0_25px_rgba(168,85,247,0.25)] mb-6">
+              <span className="mr-2 h-2 w-2 rounded-full bg-[#A855F7] animate-pulse shadow-[0_0_10px_#A855F7]" />
               {COMPANY_INFO.tagline}
             </span>
           </motion.div>
@@ -110,8 +121,8 @@ export function Hero({ onContactSales }: HeroProps) {
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
             id="hero-heading"
           >
-            <span className="block text-foreground">Custom AI, Built Around</span>
-            <span className="block bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
+            <span className="block text-white">Custom AI, Built Around</span>
+            <span className="block bg-gradient-to-r from-[#A855F7] via-purple-300 to-[#C084FC] bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(168,85,247,0.4)]">
               What You Actually Need
             </span>
           </motion.h1>
