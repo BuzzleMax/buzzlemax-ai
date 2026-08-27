@@ -51,7 +51,7 @@ export function Pricing({ onContactSales }: PricingProps) {
             Pricing
           </span>
           <h2 id="pricing-heading" className="section-title text-white">
-            Custom AI Solutions from ₹5,000
+            Custom AI Solutions from $300
           </h2>
           <p className="section-description text-gray-400">
             Don't pay for an expensive AI suite when you only need one solution. We build the specific AI assistant or automation your business needs — from website chatbots to WhatsApp, Instagram, voice and custom AI systems.
@@ -76,7 +76,7 @@ export function Pricing({ onContactSales }: PricingProps) {
                     Entry-Level Custom AI
                   </div>
                   <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                    Custom AI Solutions Start from ₹5,000
+                    Custom AI Solutions Start from $300
                   </h3>
                   <p className="text-gray-300 text-sm md:text-base max-w-xl leading-relaxed">
                     Get a focused AI solution built around your exact needs — whether it's a website chatbot, FAQ assistant, lead-capture AI, or simple automation. Pay only for what you actually need.
@@ -84,7 +84,7 @@ export function Pricing({ onContactSales }: PricingProps) {
                 </div>
                 <div className="flex flex-col items-center gap-4">
                   <div className="text-center">
-                    <div className="text-5xl md:text-6xl font-bold text-white mb-1">₹5,000</div>
+                    <div className="text-5xl md:text-6xl font-bold text-white mb-1">$300</div>
                     <div className="text-sm text-gray-400">Starting Price</div>
                   </div>
                   <Button

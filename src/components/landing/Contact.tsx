@@ -164,7 +164,7 @@ export function Contact() {
             </span>
           </h2>
           <p className="section-description">
-            Whether you need one simple AI chatbot or a complete AI automation system, tell us what you need and we'll recommend the most practical solution. Custom AI solutions start from ₹5,000.
+            Whether you need one simple AI chatbot or a complete AI automation system, tell us what you need and we'll recommend the most practical solution. Custom AI solutions start from $300.
           </p>
         </motion.div>
 

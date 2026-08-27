@@ -54,7 +54,7 @@ export const PRICING_PLANS = [
   {
     name: 'CUSTOM AI SOLUTION',
     setupFee: 0,
-    setupFeeRupees: '₹5,000',
+    setupFeeRupees: '$300',
     price: 0,
     priceRupees: 'Starting from',
     period: 'one-time',

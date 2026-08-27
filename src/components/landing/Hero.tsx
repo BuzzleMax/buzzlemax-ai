@@ -23,9 +23,9 @@ const itemVariants = {
 }
 
 const featureCards = [
-  { title: 'Website Chatbots', description: 'Starting from ₹5,000', icon: Bot },
-  { title: 'WhatsApp & Instagram AI', description: 'Starting from ₹5,000', icon: BarChart3 },
-  { title: 'Voice AI Agents', description: 'Starting from ₹5,000', icon: Zap },
+  { title: 'Website Chatbots', description: 'Starting from $300', icon: Bot },
+  { title: 'WhatsApp & Instagram AI', description: 'Starting from $300', icon: BarChart3 },
+  { title: 'Voice AI Agents', description: 'Starting from $300', icon: Zap },
 ]
 
 
@@ -131,7 +131,7 @@ export function Hero({ onContactSales }: HeroProps) {
             variants={itemVariants}
             className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-4 leading-relaxed"
           >
-            From website chatbots to WhatsApp, Instagram, voice and custom AI assistants — BuzzleMax builds the specific AI you need, starting from ₹5,000. No need to pay for a massive AI suite when one focused solution will do the job.
+            From website chatbots to WhatsApp, Instagram, voice and custom AI assistants — BuzzleMax builds the specific AI you need, starting from $300. No need to pay for a massive AI suite when one focused solution will do the job.
           </motion.p>
 
           <motion.p
@@ -198,7 +198,7 @@ export function Hero({ onContactSales }: HeroProps) {
                   </div>
                 </div>
                 <div className="flex items-end justify-between">
-                  <span className="text-xs text-primary font-medium">Starting from ₹5,000</span>
+                  <span className="text-xs text-primary font-medium">Starting from $300</span>
                 </div>
               </motion.div>
             )

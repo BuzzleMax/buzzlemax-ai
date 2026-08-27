@@ -184,7 +184,7 @@ export function ChatWidget() {
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           showLeadForm: true,
           quickActions: [
-            { label: '🤖 Custom AI — from ₹5,000', prompt: 'I want a custom AI solution' },
+            { label: '🤖 Custom AI — from $300', prompt: 'I want a custom AI solution' },
             { label: '🌐 Website', prompt: 'I need a website' },
             { label: '💬 AI Chatbot', prompt: 'I need an AI chatbot' },
             { label: '📱 WhatsApp AI', prompt: 'I need WhatsApp automation' },
