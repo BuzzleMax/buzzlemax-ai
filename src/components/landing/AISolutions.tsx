@@ -314,7 +314,7 @@ export function AISolutions({ onContactSales }: AISolutionsProps) {
               <div>
                 <p className="font-semibold text-foreground">Custom AI Audit Call</p>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  Have custom requirements? Book a 1-on-1 AI strategy audit with our team — starting at <span className="font-semibold text-foreground">$300 (~$60)</span>. We'll map out exactly what to build for your business.
+                  Have custom requirements? Book a 1-on-1 AI strategy audit with our team — starting at <span className="font-semibold text-foreground">$60</span>. We'll map out exactly what to build for your business.
                 </p>
               </div>
             </div>
