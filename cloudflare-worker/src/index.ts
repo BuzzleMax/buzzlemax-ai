@@ -22,7 +22,8 @@
 
 interface Env {
   GEMINI_API_KEY: string       // Injected at runtime from Cloudflare Secrets
-  NVIDIA_API_KEY?: string      // Optional first fallback provider
+  GEMINI_API_KEY?: string      // Primary provider
+  NVIDIA_API_KEY?: string      // Optional fallback provider
   GROQ_API_KEY?: string        // Optional emergency fallback provider
   ALLOWED_ORIGIN?: string      // Optional override (defaults to buzzlemax.site)
 }
@@ -50,7 +51,7 @@ PRIMARY SERVICES & PUBLISHED PRICING:
    - Single custom AI solutions start from $300, depending on your requirements.
    - Examples include: Website AI chatbot, Custom FAQ AI assistant, Simple customer-support AI, Simple lead-capture AI, Simple website sales assistant, Basic Instagram AI automation, Basic WhatsApp AI automation, Basic custom AI assistant, Other simple AI solutions.
    - IMPORTANT: $300 is a STARTING price, NOT a universal fixed price. Never say that every AI costs exactly $300. Always say "starting from $300", "starts at $300", or equivalent wording. More complex systems cost more depending on: integrations, automation complexity, number of platforms, CRM integration, voice functionality, advanced workflows, custom backend requirements, multiple AI agents, large knowledge bases, third-party APIs.
-   - Do NOT convert $300 back into INR. Do NOT mention any old ₹5,000 single-AI price.
+   - Do NOT convert $300 back into INR.
 
 2. WEB DEVELOPMENT:
    - Business Websites: Starting at $1,000 (90,000 Rupees) (5-10 custom pages, CMS, SEO, contact forms, responsive).
@@ -86,31 +87,31 @@ Do NOT make a small client feel that they need a huge enterprise system.
 The conversation should progress like this:
 1. Understand what they need.
 2. Identify the smallest useful solution.
-3. Tell them the starting price ("Single custom AI solutions start from $300, depending on your requirements.").
+3. Tell them the starting price ("Our custom AI solutions start from $300. The final price depends on the features and integrations you need.").
 4. Ask whether they need additional bots/features.
 5. Only then recommend a larger package if appropriate.
 
 CRITICAL AI SALES BEHAVIOR:
 If a visitor asks for a simple or single AI (e.g. "I need an AI chatbot for my website"):
-First explain: "Single custom AI solutions start from $300, depending on your requirements."
+First explain: "Our custom AI solutions start from $300. The final price depends on the features and integrations you need."
 Then ask what they want the AI to do.
 Do NOT immediately recommend the $997 Starter plan when someone only needs a single focused AI chatbot.
 
 EXAMPLE GOOD RESPONSES:
 - User: "I need an AI chatbot for my website."
-  AI: "Single custom AI solutions start from $300, depending on your requirements. What would you like the AI chatbot to do for your website?"
+  AI: "Our custom AI solutions start from $300. The final price depends on the features and integrations you need. What would you like the AI chatbot to do for your website?"
 
 - User: "I need a WhatsApp bot."
-  AI: "Single custom AI solutions start from $300, depending on your requirements. The final price depends on how advanced the automation needs to be. Do you mainly want it to answer customer questions, capture leads, or handle a more advanced workflow?"
+  AI: "Our custom AI solutions start from $300. The final price depends on the features and integrations you need. Do you mainly want it to answer customer questions, capture leads, or handle a more advanced workflow?"
 
 - User: "I need an Instagram bot."
-  AI: "Single custom AI solutions start from $300, depending on your requirements. If it's a simple AI assistant, we can keep the setup lightweight and affordable. If you need advanced automation or multiple integrations, we can scale it from there. What would you like the Instagram AI to do?"
+  AI: "Our custom AI solutions start from $300. The final price depends on the features and integrations you need. If it's a simple AI assistant, we can keep the setup lightweight and affordable. What would you like the Instagram AI to do?"
 
 - User: "I need an AI voice chatbot."
-  AI: "Custom AI voice solutions start from $300, depending on your requirements. The final price depends on the voice provider, call flow, integrations, and how advanced you want the system to be. What features do you need?"
+  AI: "Our custom AI solutions start from $300. The final price depends on the features and integrations you need. What features do you need for your voice AI?"
 
 - User: "I only need one AI for my website."
-  AI: "Single custom AI solutions start from $300, depending on your requirements. We can build a focused AI assistant tailored to your exact needs. What specific features or questions should it handle?"
+  AI: "Our custom AI solutions start from $300. The final price depends on the features and integrations you need. We can build a focused AI assistant tailored to your exact needs. What specific features or questions should it handle?"
 
 BUDGET SENSITIVITY:
 - Do NOT shame the client's budget.
@@ -170,23 +171,14 @@ function corsHeaders(allowedOrigin: string): Record<string, string> {
   }
 }
 
-// ─── Helper: is this a retryable (provider-side) error? ──────────────────────
-// Returns true for errors we should advance past (rate limits, server errors,
-// timeouts). Returns false for client-side errors that won't be fixed by trying
-// another provider with the same input.
-function isRetryableError(error: unknown): boolean {
-  if (!(error instanceof Error)) return true
-  const msg = error.message
-  if (msg === 'RATE_LIMIT_EXCEEDED') return true
-  if (msg.startsWith('SERVER_ERROR_')) return true
-  if (msg === 'TIMEOUT') return true
-  if (msg === 'EMPTY_RESPONSE') return true
-  if (msg === 'UNKNOWN_ERROR') return true
-  // Client-side errors (e.g. invalid key format, bad request) → do NOT advance
-  return false
+// ─── Helper: is this an error we should advance past? ────────────────────────
+// In a fallback chain, any provider error should allow trying the next configured provider.
+function isRetryableError(_error: unknown): boolean {
+  return true
 }
 
 // ─── Gemini API call ──────────────────────────────────────────────────────────
+// Primary provider. Uses gemini-3.6-flash
 async function callGemini(apiKey: string, messages: ChatMessage[]): Promise<string> {
   const modelName = 'gemini-3.6-flash'
   const timeout = 25000 // 25 second timeout for Worker
@@ -280,6 +272,7 @@ async function callGemini(apiKey: string, messages: ChatMessage[]): Promise<stri
 }
 
 // ─── NVIDIA NIM API call (OpenAI-compatible) ───────────────────────────────────
+// First fallback provider. Uses z-ai/glm-5.2 model as specified.
 async function callNVIDIA(apiKey: string, messages: ChatMessage[]): Promise<string> {
   const modelName = 'z-ai/glm-5.2'
   const timeout = 25000 // 25 second timeout for Worker
@@ -366,7 +359,7 @@ async function callNVIDIA(apiKey: string, messages: ChatMessage[]): Promise<stri
 }
 
 // ─── Groq API call (OpenAI-compatible) ────────────────────────────────────────
-// Emergency fallback provider. Uses llama-3.1-8b-instant — confirmed active
+// Primary provider. Uses llama-3.1-8b-instant — confirmed active
 // production model on Groq (verified via /v1/models at deployment).
 // Receives the full BuzzleMax system prompt and conversation history so pricing
 // and tone remain consistent across all providers.
@@ -558,8 +551,8 @@ export default {
     }
 
     // Call AI providers with fallback — API keys are read from env secrets, never exposed
-    if (!env.GEMINI_API_KEY) {
-      console.error('[AI ERROR] Missing primary AI configuration')
+    if (!env.GEMINI_API_KEY && !env.NVIDIA_API_KEY && !env.GROQ_API_KEY) {
+      console.error('[AI ERROR] Missing AI configuration (no provider keys found)')
       return new Response(
         JSON.stringify({
           error: 'MISSING_AI_CONFIGURATION',
@@ -575,75 +568,51 @@ export default {
     let providerUsed: string = 'none'
 
     // ── 1. Try Gemini (primary) ───────────────────────────────────────────────
-    try {
-      console.log('[AI] Attempting Gemini')
-      aiText = await callGemini(env.GEMINI_API_KEY, recentMessages)
-      providerUsed = 'gemini'
-      console.log('[AI] Gemini succeeded')
-    } catch (geminiError) {
-      const retryable = isRetryableError(geminiError)
-      console.error(
-        '[AI ERROR] Gemini failed:',
-        geminiError instanceof Error ? geminiError.message : String(geminiError),
-        retryable ? '— advancing to fallback' : '— non-retryable'
-      )
-
-      if (retryable) {
-        // ── 2. Try NVIDIA (first fallback) ─────────────────────────────────
-        if (env.NVIDIA_API_KEY) {
-          try {
-            console.log('[AI] Falling back to NVIDIA')
-            aiText = await callNVIDIA(env.NVIDIA_API_KEY, recentMessages)
-            providerUsed = 'nvidia'
-            console.log('[AI] NVIDIA succeeded')
-          } catch (nvidiaError) {
-            console.error(
-              '[AI ERROR] NVIDIA failed:',
-              nvidiaError instanceof Error ? nvidiaError.message : String(nvidiaError),
-              '— advancing to Groq'
-            )
-
-            // ── 3. Try Groq (emergency fallback) ──────────────────────────
-            if (env.GROQ_API_KEY) {
-              try {
-                console.log('[AI] Falling back to Groq (emergency)')
-                aiText = await callGroq(env.GROQ_API_KEY, recentMessages)
-                providerUsed = 'groq'
-                console.log('[AI] Groq succeeded')
-              } catch (groqError) {
-                console.error(
-                  '[AI ERROR] Groq failed:',
-                  groqError instanceof Error ? groqError.message : String(groqError),
-                  '— all providers exhausted'
-                )
-                // All three providers failed — fall through to friendly response
-              }
-            } else {
-              console.log('[AI] No Groq emergency fallback configured')
-            }
-          }
-        } else {
-          // No NVIDIA configured — jump straight to Groq
-          console.log('[AI] No NVIDIA configured — attempting Groq directly')
-          if (env.GROQ_API_KEY) {
-            try {
-              console.log('[AI] Falling back to Groq (emergency, NVIDIA not configured)')
-              aiText = await callGroq(env.GROQ_API_KEY, recentMessages)
-              providerUsed = 'groq'
-              console.log('[AI] Groq succeeded')
-            } catch (groqError) {
-              console.error(
-                '[AI ERROR] Groq failed:',
-                groqError instanceof Error ? groqError.message : String(groqError),
-                '— all providers exhausted'
-              )
-            }
-          } else {
-            console.log('[AI] No fallback providers configured')
-          }
-        }
+    if (env.GEMINI_API_KEY) {
+      try {
+        console.log('[AI] Attempting Gemini (primary)')
+        aiText = await callGemini(env.GEMINI_API_KEY, recentMessages)
+        providerUsed = 'gemini'
+        console.log('[AI] Gemini succeeded')
+      } catch (geminiError) {
+        console.error(
+          '[AI ERROR] Gemini failed:',
+          geminiError instanceof Error ? geminiError.message : String(geminiError),
+          '— advancing to fallback'
+        )
       }
-      // Non-retryable Gemini error: do not call other providers, fall through to friendly response
+    }
+
+    // ── 2. Try NVIDIA (first fallback) ───────────────────────────────────────
+    if (!aiText && env.NVIDIA_API_KEY) {
+      try {
+        console.log('[AI] Falling back to NVIDIA')
+        aiText = await callNVIDIA(env.NVIDIA_API_KEY, recentMessages)
+        providerUsed = 'nvidia'
+        console.log('[AI] NVIDIA succeeded')
+      } catch (nvidiaError) {
+        console.error(
+          '[AI ERROR] NVIDIA failed:',
+          nvidiaError instanceof Error ? nvidiaError.message : String(nvidiaError),
+          '— advancing to fallback'
+        )
+      }
+    }
+
+    // ── 3. Try Groq (emergency fallback) ─────────────────────────────────────
+    if (!aiText && env.GROQ_API_KEY) {
+      try {
+        console.log('[AI] Falling back to Groq')
+        aiText = await callGroq(env.GROQ_API_KEY, recentMessages)
+        providerUsed = 'groq'
+        console.log('[AI] Groq succeeded')
+      } catch (groqError) {
+        console.error(
+          '[AI ERROR] Groq failed:',
+          groqError instanceof Error ? groqError.message : String(groqError),
+          '— all providers exhausted'
+        )
+      }
     }
 
     // ── 4. Honest response if all providers failed ──────────────────────────
