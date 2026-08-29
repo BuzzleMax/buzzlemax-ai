@@ -141,12 +141,6 @@ export function Hero({ onContactSales }: HeroProps) {
             Don't pay for expensive AI subscriptions packed with features you don't need. We build custom AI solutions around exactly what your business needs — so you only pay for what you actually need.
           </motion.p>
 
-          <motion.p
-            variants={itemVariants}
-            className="text-xs text-muted-foreground/40 max-w-2xl mx-auto mb-10 leading-relaxed"
-          >
-            Built in India 🇮🇳. Built for businesses everywhere.
-          </motion.p>
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
